@@ -1,1 +1,6 @@
 # LYDice
+This has been an on-again/off-again project for a couple years now.  The basic idea is to have an equation-based dice roller to use when playing Dungeons and Dragons. If I want to roll two six-sided die and add 5 to them, I just want to type 2d6+5 and let the randomizer resolve a number.  
+The original code from years ago was pretty brutish, I think I used regular expressions to replace all instances of xdy with appropriate randomized numbers, then just resolved the mathematical operations with eval().  
+The most recent build does a sort of dependency-injection of operations into a queue.  Each operation acts upon the equation in its current state until a final value is resolved.  This lets me modularize it, so that I have a basic PEMDAS math module that adds operations for parentheses, exponents, multiplication, and the rest.  And a D&D module that allows for game concepts like 'rolling advantage' (rolling two twenty-sided dice, but not adding their values together so you can take the high or low one).  
+
+Future: Play around with modules for other games to stress test the flexibility of the architecture.  Expand upon logging concepts and breaking down what is happening behind the scenes.  Improve the UI. 
