@@ -8,7 +8,7 @@ describe('Dice Roller Tests', function(){
 
     describe('Basic functions', function() {
         describe('Searching', function() {
-            let dice_searching_tests = [
+            let dicesearching_tests = [
                 { input : '1d4', output : '1d4', note : 'should match 1d4' },
                 { input : 'd4', output : 'd4', note : 'should match d4' },
                 { input : 'abc2d6cba', output : '2d6', note : 'should match 2d6 when surrounded by other characters' },
@@ -18,9 +18,10 @@ describe('Dice Roller Tests', function(){
                 { input : '1a2b3c4', output : null, note : 'should not match 1a2b3c4, no dice operator' },
                 { input : '2d6+4d8', output : '2d6', note : `should match 2d6 from 2d6+4d8, only returns first match` }
             ]
-            dice_searching_tests.forEach((test)=>{
+            dicesearching_tests.forEach((test)=>{
                 it(test.note, function(){ 
-                    assert.isTrue(test.output == dice._search(test.input));
+                    //console.log(test.input, test.output, dice.search(test.input));
+                    assert.isTrue(test.output == dice.search(test.input));
                 })
             })
         })
@@ -33,12 +34,13 @@ describe('Dice Roller Tests', function(){
             ];
             dice_parsing_tests.forEach((test =>{
                 it(test.note, ()=>{
-                    assert.isTrue(JSON.stringify(test.output) === JSON.stringify(dice._parse(test.input)));
+                    assert.isTrue(JSON.stringify(test.output) === JSON.stringify(dice.parse(test.input)));
                 })
             }))
         })
 
         describe('Solving', function() {
+            roller.rand = (r)=>+r;
             let dice_roller_tests = [
                 { input : 'd4', output : '4', note : `replaced d4 with the result of rand(4)` },
                 { input : '3d6', output : '18', note : 'replaced 3d6 with rand(6) + rand(6) + rand(6)' },
@@ -46,7 +48,7 @@ describe('Dice Roller Tests', function(){
             ];
             dice_roller_tests.forEach((test => {
                 it(test.note, ()=>{
-                    dice.rand = (r)=>+r;
+                    //console.log(test.input, test.output, dice.call(test.input));
                     assert.isTrue(test.output == dice.call(test.input));
                 })
             }))

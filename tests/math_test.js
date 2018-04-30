@@ -23,7 +23,7 @@ describe('Math suite tests', function() {
             ];
             search_tests.forEach(test=>{
                 it(test.note, function(){
-                    assert.isTrue(test.output == addsub._search(test.input));
+                    assert.isTrue(test.output == addsub.search(test.input));
                 })
             })
         });
@@ -36,7 +36,7 @@ describe('Math suite tests', function() {
             ];
             parse_tests.forEach(test=>{
                 it(test.note, function(){
-                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(addsub._parse(test.input)));
+                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(addsub.parse(test.input)));
                 })
             })
         });
@@ -76,8 +76,8 @@ describe('Math suite tests', function() {
             ];
             search_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, md._search(test.input));
-                    assert.isTrue(test.output == md._search(test.input));
+                    //console.log(test.input, test.output, md.search(test.input));
+                    assert.isTrue(test.output == md.search(test.input));
                 })
             })
         });
@@ -90,8 +90,8 @@ describe('Math suite tests', function() {
             ];
             parse_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, md._parse(test.input));
-                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(md._parse(test.input)));
+                    //console.log(test.input, test.output, md.parse(test.input));
+                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(md.parse(test.input)));
                 })
             })
         });
@@ -129,8 +129,8 @@ describe('Math suite tests', function() {
             ];
             search_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, md._search(test.input));
-                    assert.isTrue(test.output == exp._search(test.input));
+                    //console.log(test.input, test.output, md.search(test.input));
+                    assert.isTrue(test.output == exp.search(test.input));
                 })
             })
         });
@@ -142,8 +142,8 @@ describe('Math suite tests', function() {
             ];
             parse_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, md._parse(test.input));
-                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(exp._parse(test.input)));
+                    //console.log(test.input, test.output, md.parse(test.input));
+                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(exp.parse(test.input)));
                 })
             })
         });
@@ -178,8 +178,8 @@ describe('Math suite tests', function() {
             ];
             search_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, parens._search(test.input));
-                    assert.isTrue(test.output == parens._search(test.input));
+                    //console.log(test.input, test.output, parens.search(test.input));
+                    assert.isTrue(test.output == parens.search(test.input));
                 })
             })
         });
@@ -191,36 +191,10 @@ describe('Math suite tests', function() {
             ];
             parse_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, test.output, parens._parse(test.input));
-                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(parens._parse(test.input)));
+                    //console.log(test.input, test.output, parens.parse(test.input));
+                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(parens.parse(test.input)));
                 })
             })
         });
     });
-
-    describe('Integration tests', function(){
-        let roller = new DiceRoller();
-        window.roller=roller;
-        roller.operations.add(math_functions);
-        roller.operations['Dice'].rand = (r)=>+r;
-        describe('Dice and Math', function(){
-            let integration_tests = [
-                { input : '', output : '', note : `successfully does nothing with no input` },
-                { input : '123', output : '123', note : `successfully ignores input with no operators` },
-                { input : '1d4', output : '4', note : `successfully rolls dice` },
-                { input : '1d6+5', output : '11', note : `successfully rolls dice and adds` },
-                { input : '1d6+4/2', output : '8', note : `successfully follows order of operations (1d6+4/2 = 8 not 5)` },
-                { input : '1d6+4/2*2', output : '10', note : `1d6+4/2*2 = rand(6)+((4/2)*2)` },
-                { input : '(6+4)/2', output : '5', note : `successfully overrides order of operations when using parenthese (6+4)/2 = 5` },
-                { input : '(2+2)^2', output : '16', note : `successfully applies exponents to parentheses` },
-                
-            ];
-            integration_tests.forEach(test=>{
-                it(test.note, function(){
-                    //console.log(test.input, test.output, roller.solve(test.input));
-                    assert.isTrue(test.output == roller.solve(test.input));
-                })
-            })    
-        });
-    })
 });

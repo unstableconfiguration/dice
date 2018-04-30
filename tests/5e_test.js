@@ -2,9 +2,7 @@
 describe('5e dice extensions', function(){
     let roller = new DiceRoller();
     let assert = chai.assert;
-    //roller.operations.add(math_functions);
     roller.operations.insert(0, dnd_functions.find(x=>x.name='Advantage'))
-    window.roller = roller;
 
     describe('Advantage/Disadvantage', function() {
         let advantage = roller.operations['Advantage'];
@@ -18,7 +16,7 @@ describe('5e dice extensions', function(){
             ];
             search_tests.forEach(test=>{
                 it(test.note, function(){
-                    assert.isTrue(test.output == advantage._search(test.input));
+                    assert.isTrue(test.output == advantage.search(test.input));
                 })
             });
         });
@@ -30,13 +28,13 @@ describe('5e dice extensions', function(){
             ];
             parse_tests.forEach(test=>{
                 it(test.note, function(){
-                    //console.log(test.input, JSON.stringify(test.output), JSON.stringify(advantage._parse(test.input)));
-                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(advantage._parse(test.input)));
+                    //console.log(test.input, JSON.stringify(test.output), JSON.stringify(advantage.parse(test.input)));
+                    assert.isTrue(JSON.stringify(test.output) == JSON.stringify(advantage.parse(test.input)));
                 })
             })
         });
         describe('Solving', function(){
-            roller.operations['Dice'].rand = (r)=>+r;
+            roller.rand = (r)=>+r;
             let solve_tests = [
                 { input : '2xd20', output : [20, 20], note : `2xd20 successfully created array of 20 rolled twice` },
                 { input : '3xd4', output : [4,4,4], note : `3xd4 successfully created array of 4 rolled thrice` },
