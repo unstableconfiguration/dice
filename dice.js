@@ -28,7 +28,8 @@ let DiceRoller = function(config){
     roller.operations = new Operations(roller);
 
     roller.rand = (r)=>Math.floor((Math.random()*r)+1);
-
+    
+    
     let dice_search = /\d*[d]\d+/;
     let dice_eval = function(rolls, facets) {
         let value = 0;

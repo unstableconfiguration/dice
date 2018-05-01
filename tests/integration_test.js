@@ -25,7 +25,6 @@ describe('Integration Tests', function(){
         })    
     });
     describe('Dice, Math, and 5e', function(){
-        window.roller = roller;
         let integration_tests = [
             { input : '2xd20+1d6+5', output : '[20,20]+11', note : `Rolls advantage and solves the rest of the equation independently.`},
             { input : '10+1d6', output : '16', note : `Dice rolls precede math functions`},
@@ -36,5 +35,21 @@ describe('Integration Tests', function(){
                 assert.isTrue(test.output == roller.solve(test.input));
             })
         })
-    })
+    });
+
+    describe('Logging with Math', function(){
+        let roller;
+        beforeEach(function(){
+            roller = new LoggingRoller();
+            roller.operations.add(math_functions);
+        });
+        it('should log dice then math', function(){
+            roller.solve('d4+5')
+            let last = roller.log.get_last_solution();
+            assert.isTrue(last[0] == 'd4+5');
+            assert.isTrue(/[1-4]\+5/.test(last[1]))
+            assert.isTrue(/[6-9]/.test(last[2]))
+        })
+
+    });
 });
