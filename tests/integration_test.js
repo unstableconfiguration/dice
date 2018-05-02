@@ -43,13 +43,13 @@ describe('Integration Tests', function(){
             roller = new LoggingRoller();
             roller.operations.add(math_functions);
         });
-        it('should log dice then math', function(){
+        /*it('should log dice then math', function(){
             roller.solve('d4+5')
             let last = roller.log.get_last_solution();
             assert.isTrue(last[0] == 'd4+5');
             assert.isTrue(/[1-4]\+5/.test(last[1]))
             assert.isTrue(/[6-9]/.test(last[2]))
-        })
+        })*/
 
     });
 });

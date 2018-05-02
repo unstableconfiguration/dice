@@ -55,6 +55,8 @@ let LoggingRoller = function(){
 }
 
 
+
+
 LoggingRoller.prototype.Log =  function(){
     let log = this;
     log.solutions = [];
@@ -94,28 +96,8 @@ LoggingRoller.prototype.Log =  function(){
     log._rolls = [];
     log.log_roll = function(facets, outcome){
         log._rolls.push({ facets : facets, output : outcome });
-    }
-
-    let get_dice_string = function(dice_op){
-        let die_string = dice_op.dice.map(dice =>{
-            return dice.input + '=' + dice.rolls.map(die=>die.output).join('+')
-        }).join();
-        return dice_op.output + '(' + die_string + ')';
-    }
-    log.get_solution_stack = function(index=0){
-        let solution = log.solutions[index];
-        let stack = solution.operations.map(op=>{
-            if(op.name !== 'Dice') return op.output;
-            return get_dice_string(op);
-        });
-        stack.unshift(solution.input);
-        return stack;
-    }
-    log.get_last_solution = function(){
-        return log.get_solution_stack([log.solutions.length-1]);
-    }
+    }    
 }
-
 
 
 
