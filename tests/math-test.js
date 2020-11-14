@@ -1,4 +1,6 @@
 
+// 3*(6+3^2) is returning 35 for some reason. 
+
 describe('Math suite tests', function() {
     let assert = chai.assert;
     let math = math_functions;
