@@ -40,6 +40,7 @@ describe('Dice Roller Tests', function(){
         })
 
         describe('Solving', function() {
+            let roller = new DiceRoller()
             roller.rand = (r)=>+r;
             let dice_roller_tests = [
                 { input : 'd4', output : '4', note : `replaced d4 with the result of rand(4)` },
