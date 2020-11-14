@@ -34,3 +34,12 @@
 .site-content p {
     white-space: pre-line;
 }
+
+.site-content code {
+    display:block;
+    height: 200px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    resize:vertical;
+
+}

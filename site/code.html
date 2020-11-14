@@ -3,14 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <link href='css/site.css' rel='stylesheet' />
+    <!-- prism.js syntax highlighting -->
+    <link href='css/vendor/prism.css' rel='stylesheet'/>
+    <script src='scripts/vendor/prism.js' data-manual></script>
 </head>
 <body>
     <div class='site-header'>
         <a href=index.html>dice.js</a>
     </div>
     <div class='site-content'>
-        <p>
-            Code
-        </p>
+        <p><h3>main code</h3></p>
+        <p>We'll be refactoring this soon, but here's the main dice roller code. </p>
+        <pre class='language-javascript'><code id='diceCode'></code></pre>
+        <p><h3>math module</h3></p>
+        <pre class='language-javascript'><code id='mathCode'></code></pre>
     </div>
 </body>
+
+<script>
+    (()=>{
+        let fetchCode = function(filePath, onLoaded) {
+            fetch(filePath).then(response => {
+                response.text().then(text => onLoaded(text));
+            })
+        }
+
+        fetchCode('../dice.js', (text) => {
+            document.getElementById('diceCode').innerHTML = 
+                Prism.highlight(text, Prism.languages.javascript, 'javascript');
+        });
+
+        fetchCode('../modules/math.js', (text) => { 
+            document.getElementById('mathCode').innerHTML = 
+                Prism.highlight(text, Prism.languages.javascript, 'javascript');
+        });
+
+    })();
+
+</script>
