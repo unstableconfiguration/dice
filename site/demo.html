@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <link href='css/site.css' rel='stylesheet' />
-    <script src='../dice.js'></script>
+    <!--<script src='../dice.js'></script>
     <script src='../modules/math.js'></script>
     <script src='../modules/5e.js'></script>
-    <script src='../modules/logging.js'></script>
+    <script src='../modules/logging.js'></script>-->
   
 </head>
 <body>
@@ -34,11 +34,15 @@
         <p>Broadly speaking, it works by setting up a queue of processes. Each process scans the input to see if it is a valid target (the addition function looks for numbers surrounding a + sign). It then strips out the operators and operands, performs its operation, and inserts the results back into the ongoing equation. So the input equation gets examined and mutated by each process in order until they are all done leaving the result.</p>
 </body>
 
-<script>
+<script type='module'>
+    import { DiceRoller } from '../dice.js'
+    import { math } from '../modules/math.js'
+    import { dnd } from '../modules/5e.js'
+
     (()=>{
         let dice = new DiceRoller();
-        dice.operations.add(math_functions);
-        dice.operations.insert([0], dnd_functions[0]);
+        dice.operations.add(math);
+        dice.operations.insert([0], dnd[0]);
         let input = document.getElementById('diceInput');
         let output = document.getElementById('diceOutput');
         input.addEventListener('keypress', (ev) => { 

@@ -1,8 +1,9 @@
+import { DiceOperation } from '../dice-operation.js'
 
-let dnd_functions = [
+export let dnd = [
     // Matches pattern like 2xd20 where the x differentiates it from a normal roll. 
     // Rolls n times but keeps the rolls separated rather than adding them together. 
-    new DiceRoller.prototype.Operation(
+    new DiceOperation(
         'Advantage', {
 			search : /\d+xd\d+/,
 			call : function(repetitions, facets){

@@ -1,7 +1,7 @@
-
+import { DiceRoller } from '../dice.js'
 // to log things. 
 
-let LoggingRoller = function(){
+export let LoggingRoller = function(){
     DiceRoller.call(this);
     let roller = this;
 
