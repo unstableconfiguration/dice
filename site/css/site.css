@@ -1,0 +1,24 @@
+
+.site-header {
+    display:block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:large;
+    padding-left:5%
+}
+
+.site-header>a:link, a:visited{
+    color:black;
+    text-decoration:none;
+}
+
+.site-header>a:hover, a:active {
+    font-style:italic
+}
+
+.site-content { 
+    display:block;
+    padding:5% 10% 5% 10%;
+    font-family: Arial, Helvetica, sans-serif;
+    color:dimgray
+}
