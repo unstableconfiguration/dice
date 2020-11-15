@@ -7,8 +7,8 @@ export let IntegrationTests = ()=>{
     describe('Integration Tests', function(){
         let assert = chai.assert;
         let roller = new DiceRoller();
-        roller.operations.add(math);
-        roller.operations.insert(0, dnd[0]);
+        roller.operations = roller.operations.concat(math);
+        roller.operations.unshift(dnd[0]);
         roller.rand = (r)=>+r;
         describe('Dice and Math', function(){
             let integration_tests = [
@@ -45,7 +45,7 @@ export let IntegrationTests = ()=>{
             let roller;
             beforeEach(function(){
                 roller = new LoggingRoller();
-                roller.operations.add(math);
+                roller.operations = roller.operations.concat(math);
             });
             /*it('should log dice then math', function(){
                 roller.solve('d4+5')

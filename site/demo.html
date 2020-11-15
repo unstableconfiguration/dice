@@ -41,8 +41,8 @@
 
     (()=>{
         let dice = new DiceRoller();
-        dice.operations.add(math);
-        dice.operations.insert([0], dnd[0]);
+        dice.operations = dice.operations.concat(math);
+        dice.operations.unshift(dnd[0]);
         let input = document.getElementById('diceInput');
         let output = document.getElementById('diceOutput');
         input.addEventListener('keypress', (ev) => { 

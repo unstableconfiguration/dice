@@ -1,19 +1,28 @@
 import { DiceOperation } from './dice-operation.js';
-import { DiceOperations } from './dice-operations.js';
+
+/* 
+    So what is the interfacce of the DiceRoller 
+
+    .solve(input string)
+
+    .operations [DiceOperation]
+    or .operations DiceOperations
+
+*/
+
 
 export let DiceRoller = function(config) {
     let roller = this;
+    roller.operations = [];
+
     //roller.config = config || {};
 
     roller.solve = function(input) {
-        roller.operations.order.forEach((opname)=>{
-            let op = roller.operations[opname];
+        roller.operations.forEach((op)=>{
             input = op.call(input);
         });
         return input;
     }
-
-    roller.operations = new DiceOperations(roller);
 
     roller.rand = (r)=>Math.floor((Math.random()*r)+1);
     
@@ -28,7 +37,7 @@ export let DiceRoller = function(config) {
         search : dice_search,
         call : dice_eval
     });
-    roller.operations.add(dice_roll);
+    roller.operations.push(dice_roll);
 
 }
 
