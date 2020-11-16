@@ -7,16 +7,21 @@ export let DnDModule = {
 		roller.operations.unshift(advantage);
 	},
 	operations : [
-		// Matches pattern like 2xd20 where the x differentiates it from a normal roll. 
-		// Rolls n times but keeps the rolls separated rather than adding them together. 
+		/* The game frequently asks the player to roll a twenty-sided die twice and pick the higher 
+			or lower of the two rolls. 
+			using the syntax 2xd20 it will roll the die twice and separate the results into an array. 
+		*/ 
 		new DiceOperation({
 				name : 'Advantage',
 				search : /\d+xd\d+/,
 				evaluate : function(repetitions, facets){
 					let operation = this;
-					let results = Array(+repetitions).fill('d'+facets)
-						.map(x=>+operation.parent.solve(x));
-					return JSON.stringify(results.sort((x,y)=>+x<+y));
+					// 2xd20 becomes [d20, d20]. We then let the roller solve each d20 
+					let results = Array(+repetitions).fill('d' + facets)
+						.map(x => +operation.parent.solve(x));
+					// high-to-low sorting
+					results.sort((x,y) => +x < +y);
+					return JSON.stringify(results);
 				},
 				getOperands : (match)=>[/^\d+/.exec(match)[0], /\d+$/.exec(match)[0]]
 			}
