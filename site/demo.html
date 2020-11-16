@@ -3,11 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <link href='css/site.css' rel='stylesheet' />
-    <!--<script src='../dice.js'></script>
-    <script src='../modules/math.js'></script>
-    <script src='../modules/5e.js'></script>
-    <script src='../modules/logging.js'></script>-->
-  
 </head>
 <body>
     <div class='site-header'>
@@ -36,14 +31,12 @@
 
 <script type='module'>
     import { DiceRoller } from '../dice.js'
-    import { LoggingRoller } from '../modules/logging.js'
     import { MathModule } from '../modules/math-module.js'
     import { DnDModule } from '../modules/dnd-module.js'
-
+    
     (()=>{
-        let dice = new LoggingRoller({ modules : [MathModule, DnDModule] });
-        window.roller = dice;
-
+        let dice = new DiceRoller({ modules : [MathModule, DnDModule]})
+    
         let input = document.getElementById('diceInput');
         let output = document.getElementById('diceOutput');
         input.addEventListener('keypress', (ev) => { 
