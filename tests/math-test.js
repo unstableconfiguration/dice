@@ -1,204 +1,237 @@
-import { math } from '../modules/math.js'
+import { MathModule } from '../modules/math-module.js'
+import { DiceRoller } from '../dice.js'
+let assert = chai.assert
 
 // 3*(6+3^2) is returning 35 for some reason. 
 
 export let MathTests = () => { 
-    describe('Math suite tests', function() {
-        let assert = chai.assert;
-        
-        describe('Addition and subtraction', function() {
-            let addsub = math.find(x=>x.name=='AddSubtract');
-            describe('Searching', function(){
-                let search_tests = [
+    describe('Math Module Unit Tests', function() {
+
+        describe('Addition', function() { 
+            let addOperation = MathModule.operations.find(mod => mod.name == 'Add');
+            describe('Search Tests', function() { 
+                let addSearchTests = [
                     { input : '1+2', output : '1+2', note : `should match 1+2` },
                     { input : '1+', output : null, note : `should not match '1+'` },
                     { input : '+2', output : null, note : `should not match +2` },
-                    { input : '1-2', output : '1-2', note : `should match 1-2` },
-                    { input : '1-', output : null, note : `should not match 1-` },
-                    { input : '-2', output : null, note : `should not match -2` },
-                    { input : '-2-3', output : '-2-3', note : `should match -2-3` },
-                    { input : '-3+4', output : '-3+4', note : `should match -3+4` },
-                    { input : '5*4', output : null, note : `should not match 5*4` },
-                    { input : '3d4', output : null, note : `should not match 3d4` },
-                    { input : '9-8+7+6', output : '9-8', note : `should match the first set` },
-                    //{ input : '', output : '', note : `` },
-
-                ];
-                search_tests.forEach(test=>{
-                    it(test.note, function(){
-                        assert.isTrue(test.output == addsub.search(test.input));
-                    })
-                })
-            });
-            describe('Parsing', function() {
-                let parse_tests = [
-                    { input : '1+2', output : ['1', '2', '+'], note : `parses 1+2 into  [1, 2, +]` },
-                    { input : '2-3', output : ['2', '-3', '+'], note : `parses 2-3 into [2, -3, +]` },
-                    { input : '-3+4', output : ['-3', '4', '+'], note : `parses -3+4 into [-3, 4, +]` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                parse_tests.forEach(test=>{
-                    it(test.note, function(){
-                        assert.isTrue(JSON.stringify(test.output) == JSON.stringify(addsub.parse(test.input)));
-                    })
-                })
-            });
-            describe('Solving', function(){
-                let solve_tests = [
-                    { input : '1+2', output : '3', note : `added 1 and 2` },
-                    { input : '2-3', output : '-1', note : `subtracted 3 from 2` },
-                    { input : '-4-4', output : '-8', note : `subtacted 4 from -4` },
-                    { input : '-5+6', output : '1', note : `added 6 to -5` },
-                    { input : '6+7-8', output : '5', note : `added 6+7 then subtacted 8` },
-                    //{ input : '', output : '', note : `` },
+                    { input : '1-2', output : null, note : 'should not match 1-2' }
                 ]
-                solve_tests.forEach(test=>{
-                    it(test.note, function(){
-                        assert.isTrue(test.output == addsub.call(test.input));
-                    })
-                })
+                addSearchTests.forEach(test => { 
+                    it(test.note, function() {
+                        assert(addOperation.search(test.input) == test.output);
+                    });
+                });
+            });
+
+            describe('Parse Tests', function() {
+                let addParseTests = [
+                    { input : '1+2', output : ['1', '2'], note : 'should parse 1+2 to [1, 2]' },
+                    { input : '-3+4', output : ['-3', '4'], note : 'should parse -3+4 to [-3, 4]'},
+                    { input : '55+66', output : ['55', '66'], note : 'should parse 55+66 to [55, 66]'}
+                ];
+                addParseTests.forEach(test => {
+                    it(test.note, function() {
+                        assert(JSON.stringify(addOperation.parse(test.input)) == JSON.stringify(test.output));
+                    });
+                });
+            });
+
+            describe('Evaluation Tests', function() { 
+                it('should evaluate 1+2 to 3', function() { 
+                    assert(addOperation.evaluate('1+2') === '3');
+                });
+                it('should evaluate -1+3-2 to 2-2 (addition operation only)', function() { 
+                    assert(addOperation.evaluate('-1+3-2') == '2-2');
+                });
             });
         });
 
-        describe('Multiplication and Division', function() {
-            let md = math.find(x=>x.name=='MultiplyDivide');
-            describe('Searching', function(){
-                let search_tests = [
-                    { input : '1*2', output : '1*2', note : `should match 1*2` },
-                    { input : '1*', output : null, note : `should not match '1*'` },
-                    { input : '*2', output : null, note : `should not match *2` },
-                    { input : '1/2', output : '1/2', note : `should match 1/2` },
-                    { input : '1/', output : null, note : `should not match 1/` },
-                    { input : '/2', output : null, note : `should not match /2` },
-                    { input : '-2/-3', output : '-2/-3', note : `should match -2/-3` },
-                    { input : '-3*4', output : '-3*4', note : `should match -3*4` },
-                    { input : '5+4', output : null, note : `should not match 5+4` },
-                    { input : '3d4', output : null, note : `should not match 3d4` },
-                    { input : '9*8/7+6', output : '9*8', note : `should match the first set` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                search_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.search(test.input));
-                        assert.isTrue(test.output == md.search(test.input));
-                    })
-                })
-            });
-            describe('Parsing', function() {
-                let parse_tests = [
-                    { input : '1*2', output : ['1', '2', '*'], note : `parses 1*2 into  [1, 2, *]` },
-                    { input : '2/3', output : ['2', '3', '/'], note : `parses 2-3 into [2, 3, /]` },
-                    { input : '-3*4', output : ['-3', '4', '*'], note : `parses -3*4 into [-3, 4, *]` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                parse_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.parse(test.input));
-                        assert.isTrue(JSON.stringify(test.output) == JSON.stringify(md.parse(test.input)));
-                    })
-                })
-            });
-            describe('Solving', function(){
-                let solve_tests = [
-                    { input : '1*2', output : '2', note : `multiplied 1 and 2` },
-                    { input : '4/2', output : '2', note : `divided 4 by 2` },
-                    { input : '-4*4', output : '-16', note : `multiplied 4 and -4` },
-                    { input : '5*6/5', output : '6', note : `multiplied 5 and 6 then divided by 5` },
-                    { input : '1/2*3', output : '1.5', note : `divided 1 by 2 then multiplied by 3` },
-                    //{ input : '', output : '', note : `` },
-                ]
-                solve_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.call(test.input));
-                        assert.isTrue(test.output == md.call(test.input));
-                    })
-                })
-            });
-        });
         
-        describe('Exponents', function() {
-            let exp = math.find(x=>x.name=='Exponents');
-            describe('Searching', function(){
-                let search_tests = [
-                    { input : '1^2', output : '1^2', note : `should match 1^2` },
-                    { input : '2^', output : null, note : `should not match '2^'` },
-                    { input : '^3', output : null, note : `should not match ^3` },
-                    { input : '-2^-3', output : '-2^-3', note : `should match -2^-3` },
-                    { input : '-3^4', output : '-3^4', note : `should match -3^4` },
-                    { input : '5+4', output : null, note : `should not match 5+4` },
-                    { input : '3d4', output : null, note : `should not match 3d4` },
-                    { input : '9*4^2-3^2', output : '4^2', note : `should match the first set` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                search_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.search(test.input));
-                        assert.isTrue(test.output == exp.search(test.input));
-                    })
-                })
-            });
-            describe('Parsing', function() {
-                let parse_tests = [
-                    { input : '1^2', output : ['1', '2', '^'], note : `parses 1^2 into  [1, 2, ^]` },
-                    { input : '-3^4', output : ['-3', '4', '^'], note : `parses -3*4 into [-3, 4, ^]` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                parse_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.parse(test.input));
-                        assert.isTrue(JSON.stringify(test.output) == JSON.stringify(exp.parse(test.input)));
-                    })
-                })
-            });
-            describe('Solving', function(){
-                let solve_tests = [
-                    { input : '1^2', output : '1', note : `squared 1` },
-                    { input : '2^3', output : '8', note : `cubed 2` },
-                    { input : '4^1', output : '4', note : `4^1` },
-                    { input : '-2^3', output : '-8', note : `cubed -2` },
-                    { input : '2^2^2', output : '16', note : `squared 2-squared` },
-                    //{ input : '', output : '', note : `` },
+        describe('Subtraction', function() { 
+            let subtractOperation = MathModule.operations.find(mod => mod.name == 'Subtract');
+            describe('Search Tests', function() { 
+                let addSearchTests = [
+                    { input : '1-2', output : '1-2', note : `should match 1-2` },
+                    { input : '1-', output : null, note : `should not match '1-'` },
+                    { input : '-2', output : null, note : `should not match -2` },
+                    { input : '1+2', output : null, note : 'should not match 1+2' }
                 ]
-                solve_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, md.call(test.input));
-                        assert.isTrue(test.output == exp.call(test.input));
-                    })
-                })
+                addSearchTests.forEach(test => { 
+                    it(test.note, function() {
+                        assert(subtractOperation.search(test.input) == test.output);
+                    });
+                });
+            });
+
+            describe('Parse Tests', function() {
+                let addParseTests = [
+                    { input : '1-2', output : ['1', '2'], note : 'should parse 1-2 to [1, 2]' },
+                    { input : '-3-4', output : ['-3', '4'], note : 'should parse -3-4 to [-3, 4]'},
+                    { input : '55--66', output : ['55', '-66'], note : 'should parse 55-66 to [55, 66]'}
+                ];
+                addParseTests.forEach(test => {
+                    it(test.note, function() {
+                        assert(JSON.stringify(subtractOperation.parse(test.input)) == JSON.stringify(test.output));
+                    });
+                });
+            });
+
+            describe('Evaluation Tests', function() { 
+                it('should evaluate 1-2 to -1', function() { 
+                    assert(subtractOperation.evaluate('1-2') === '-1');
+                });
+                it('should evaluate -1+3-2 to -1+1 (addition operation only)', function() { 
+                    assert(subtractOperation.evaluate('-1+3-2') == '-1+1');
+                });
             });
         });
 
-        describe('Parentheses', function() {
-            let parens = math.find(x=>x.name=='Parentheses');
-            describe('Searching', function(){
-                let search_tests = [
-                    { input : '(1)', output : '(1)', note : `should match (1)` },
-                    { input : '(', output : null, note : `should not match (` },
-                    { input : ')', output : null, note : `should not match )` },
-                    { input : '()', output : null, note : `should not match ()` },
-                    { input : '(9+4)*(3-2)', output : '(9+4)', note : `should match the first set` },
-                    //{ input : '', output : '', note : `` },
+        describe('Multiplication Tests', function() { 
+            let multiplyOperation = MathModule.operations.find(op => op.name == 'Multiply');
+            describe('Search Tests', function() { 
+                let searchTests = [
+                    { input : '1*2', output : '1*2', note : 'matches 1*2' },
+                    { input : '1*x', output : null, note : 'does not match 1*x' },
+                    { input : 'y*2', output : null, note : 'does not match y*2' },
+                    { input : 'abc33*44xyz', output : '33*44', note : 'matches 33*44 in abc33*44xyz' }
+
                 ];
-                search_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, parens.search(test.input));
-                        assert.isTrue(test.output == parens.search(test.input));
-                    })
-                })
+                searchTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(multiplyOperation.search(test.input) == test.output);     
+                    });
+                });
             });
-            describe('Parsing', function() {
-                let parse_tests = [
-                    { input : '(1+2)', output : ['1+2'], note : `parses (1+2) into  [1+2]` },
-                    { input : '(-3/4)', output : ['-3/4'], note : `parses (-3/4) into [-3/4]` },
-                    //{ input : '', output : '', note : `` },
-                ];
-                parse_tests.forEach(test=>{
-                    it(test.note, function(){
-                        //console.log(test.input, test.output, parens.parse(test.input));
-                        assert.isTrue(JSON.stringify(test.output) == JSON.stringify(parens.parse(test.input)));
+
+            describe('Parse Tests', function() { 
+                let parseTests = [
+                    { input : '1*2', output : ['1', '2'], note : 'extracts [1, 2] from 1*2' },
+                    { input : '-10*-100', output : ['-10', '-100'], note : 'extracts [-10, -100] from -10*-100' },
+                ]
+                parseTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(JSON.stringify(multiplyOperation.parse(test.input)) == JSON.stringify(test.output));
                     })
-                })
+                });
+            });
+
+            describe('Evaluation Tests', function() { 
+                it('should evaluate 2*4 as 8', function() { 
+                    assert(multiplyOperation.evaluate('2*4') == '8');
+                });
+                it('should evaluate 4+2*8 as 4+16', function() {
+                    assert(multiplyOperation.evaluate('4+2*8') == '4+16')
+                });
             });
         });
+
+        describe('Division Tests', function() { 
+            let divideOperation = MathModule.operations.find(op => op.name == 'Divide');
+            describe('Search Tests', function() { 
+                let searchTests = [
+                    { input : '1/2', output : '1/2', note : 'matches 1/2' },
+                    { input : '1/x', output : null, note : 'does not match 1/x' },
+                    { input : 'y/2', output : null, note : 'does not match y/2' },
+                    { input : 'abc33/44xyz', output : '33/44', note : 'matches 33/44 in abc33/44xyz' }
+
+                ];
+                searchTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(divideOperation.search(test.input) == test.output);     
+                    });
+                });
+            });
+
+            describe('Parse Tests', function() { 
+                let parseTests = [
+                    { input : '1/2', output : ['1', '2'], note : 'extracts [1, 2] from 1/2' },
+                    { input : '-10/-100', output : ['-10', '-100'], note : 'extracts [-10, -100] from -10/-100' },
+                ]
+                parseTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(JSON.stringify(divideOperation.parse(test.input)) == JSON.stringify(test.output));
+                    })
+                });
+            });
+
+            describe('Evaluation Tests', function() { 
+                it('should evaluate 4/2 as 2', function() { 
+                    assert(divideOperation.evaluate('4/2') == '2');
+                });
+                it('should evaluate 4+2/8 as 4+.25', function() {
+                    assert(divideOperation.evaluate('4+8/2') == '4+4')
+                });
+            });        
+        });
+
+        describe('Exponents Tests', function() { 
+            let exponentOperation = MathModule.operations.find(op => op.name == 'Exponents');
+            describe('Search Tests', function() { 
+                let searchTests = [
+                    { input : '2^2', output : '2^2', note : 'matches 2^2' },
+                    { input : '2^x', output : null, note : 'does not match 2^x' },
+                    { input : 'y^2', output : null, note : 'does not match y^2' },
+                    { input : 'abc22^22xyz', output : '22^22', note : 'matches 22^22 in abc22^22xyz' }
+                ];
+                searchTests.forEach(test => { 
+                    it(test.note, function() { 
+                        assert(exponentOperation.search(test.input) == test.output);
+                    });
+                });
+            });
+
+            describe('Parse Tests', function() { 
+                let parseTests = [
+                    { input : '2^2', output : ['2', '2'], note : 'parses [2, 2] from 2^2' },
+                    { input : '-10^-2', output : ['-10', '-2'], note : 'parses [-10, -2] from -10^-2' }
+                ];
+                parseTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(JSON.stringify(exponentOperation.parse(test.input)) == JSON.stringify(test.output));
+                    })
+                });
+
+            });
+
+            describe('Evaluation Tets', function() { 
+                it('should evaluate 2^3 as 8', function() { 
+                    assert(exponentOperation.evaluate('2^3') == '8');
+                });
+                it('should evaluate 2^-3 as .125', function() { 
+                    assert(exponentOperation.evaluate('2^-3') == .125);
+                });
+            });
+        });
+
+        describe('Parentheses Tests', function() { 
+            let parenthesesOperation = MathModule.operations.find(op => op.name == 'Parentheses');
+            describe('Search Tests', function() {
+                let searchTests = [
+                    { input : '(1+2)', output : '(1+2)', note : 'should match (1+2)'},
+                    { input : '(1+2', output : null, note : 'should not match (1+2' },
+                    { input : '1+2)', output : null, note : 'should not match 1+2)' },
+                    { input : 'abc(xyz)123', output : '(xyz)', note : 'should match (xyz) in abc(xyz)123' }
+                ];
+                searchTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(parenthesesOperation.search(test.input) == test.output);
+                    });
+                });
+            });
+
+            describe('Parse Tests', function() { 
+                let parseTests = [
+                    { input : '(1+2)', output : ['1+2'], note : 'should extract inner equation'}
+                ];
+                parseTests.forEach(test => { 
+                    it(test.note, function() { 
+                        assert(JSON.stringify(parenthesesOperation.parse(test.input)) == JSON.stringify(test.output));
+                    })
+                });
+            });
+
+            // Evaluation tests only make sense in the context of the full math module
+        });
+
     });
 }
