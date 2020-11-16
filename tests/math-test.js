@@ -84,82 +84,58 @@ export let MathTests = () => {
             });
         });
 
-        describe('Multiplication Tests', function() { 
-            let multiplyOperation = MathModule.operations.find(op => op.name == 'Multiply');
+        describe('Multiplication and Division Tests', function() { 
+            let multDivOperation = MathModule.operations.find(op => op.name == 'MultiplyAndDivide');
             describe('Search Tests', function() { 
                 let searchTests = [
                     { input : '1*2', output : '1*2', note : 'matches 1*2' },
                     { input : '1*x', output : null, note : 'does not match 1*x' },
                     { input : 'y*2', output : null, note : 'does not match y*2' },
-                    { input : 'abc33*44xyz', output : '33*44', note : 'matches 33*44 in abc33*44xyz' }
+                    { input : 'abc33*44xyz', output : '33*44', note : 'matches 33*44 in abc33*44xyz' },
 
+                    { input : '1/2', output : '1/2', note : 'matches 1/2' },
+                    { input : '1/x', output : null, note : 'does not match 1/x' },
+                    { input : 'y/2', output : null, note : 'does not match y/2' },
+                    { input : 'abc33/44xyz', output : '33/44', note : 'matches 33/44 in abc33/44xyz' }
                 ];
                 searchTests.forEach(test => {
                     it(test.note, function() { 
-                        assert(multiplyOperation.search(test.input) == test.output);     
+                        assert(multDivOperation.search(test.input) == test.output);     
                     });
                 });
             });
 
             describe('Parse Tests', function() { 
                 let parseTests = [
-                    { input : '1*2', output : ['1', '2'], note : 'extracts [1, 2] from 1*2' },
-                    { input : '-10*-100', output : ['-10', '-100'], note : 'extracts [-10, -100] from -10*-100' },
+                    { input : '1*2', output : ['1', '2', '*'], note : 'extracts [1, 2] from 1*2' },
+                    { input : '-10*-100', output : ['-10', '-100', '*'], note : 'extracts [-10, -100] from -10*-100' },
+                
+                    { input : '1/2', output : ['1', '2', '/'], note : 'extracts [1, 2] from 1/2' },
+                    { input : '-10/-100', output : ['-10', '-100', '/'], note : 'extracts [-10, -100] from -10/-100' },
                 ]
                 parseTests.forEach(test => {
                     it(test.note, function() { 
-                        assert(JSON.stringify(multiplyOperation.parse(test.input)) == JSON.stringify(test.output));
+                        assert(JSON.stringify(multDivOperation.parse(test.input)) == JSON.stringify(test.output));
                     })
                 });
             });
 
             describe('Evaluation Tests', function() { 
                 it('should evaluate 2*4 as 8', function() { 
-                    assert(multiplyOperation.evaluate('2*4') == '8');
+                    assert(multDivOperation.evaluate('2*4') == '8');
                 });
                 it('should evaluate 4+2*8 as 4+16', function() {
-                    assert(multiplyOperation.evaluate('4+2*8') == '4+16')
+                    assert(multDivOperation.evaluate('4+2*8') == '4+16')
                 });
-            });
-        });
-
-        describe('Division Tests', function() { 
-            let divideOperation = MathModule.operations.find(op => op.name == 'Divide');
-            describe('Search Tests', function() { 
-                let searchTests = [
-                    { input : '1/2', output : '1/2', note : 'matches 1/2' },
-                    { input : '1/x', output : null, note : 'does not match 1/x' },
-                    { input : 'y/2', output : null, note : 'does not match y/2' },
-                    { input : 'abc33/44xyz', output : '33/44', note : 'matches 33/44 in abc33/44xyz' }
-
-                ];
-                searchTests.forEach(test => {
-                    it(test.note, function() { 
-                        assert(divideOperation.search(test.input) == test.output);     
-                    });
-                });
-            });
-
-            describe('Parse Tests', function() { 
-                let parseTests = [
-                    { input : '1/2', output : ['1', '2'], note : 'extracts [1, 2] from 1/2' },
-                    { input : '-10/-100', output : ['-10', '-100'], note : 'extracts [-10, -100] from -10/-100' },
-                ]
-                parseTests.forEach(test => {
-                    it(test.note, function() { 
-                        assert(JSON.stringify(divideOperation.parse(test.input)) == JSON.stringify(test.output));
-                    })
-                });
-            });
-
-            describe('Evaluation Tests', function() { 
+                
                 it('should evaluate 4/2 as 2', function() { 
-                    assert(divideOperation.evaluate('4/2') == '2');
+                    assert(multDivOperation.evaluate('4/2') == '2');
                 });
                 it('should evaluate 4+2/8 as 4+.25', function() {
-                    assert(divideOperation.evaluate('4+8/2') == '4+4')
+                    assert(multDivOperation.evaluate('4+8/2') == '4+4')
                 });
-            });        
+            
+            });
         });
 
         describe('Exponents Tests', function() { 
@@ -235,9 +211,7 @@ export let MathTests = () => {
             let roller = new DiceRoller({ modules : [MathModule] });
             it('should evaluate 3*(6+3^2) as 45', function() {
                 assert(roller.solve('3*(6+3^2)') == '45')
-            });
-            
+            }); 
         });
-
     });
 }

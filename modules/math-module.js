@@ -32,19 +32,20 @@ export let MathModule = {
         })
         , new DiceOperation({
             name : 'Exponents',
-            // -?(\d*\.)?\d+ matches [1, -1, .1, 0.1, -.1, -0.1]
             search : /-?(\d*\.)?\d+\^-?(\d*\.)?\d+/,
             evaluate : (x,y) => Math.pow(x, y)
         })
+        /* Needs to happen simultaneously, so a single function */
         , new DiceOperation({
-            name : 'Multiply', 
-            search : /-?(\d*\.)?\d+[*]-?(\d*\.)?\d+/,
-            evaluate : (x,y) => x * y
-        })
-        , new DiceOperation({
-            name : 'Divide',
-            search : /-?(\d*\.)?\d+[\/]-?(\d*\.)?\d+/,
-            evaluate : (x,y) => x / y
+            name : 'MultiplyAndDivide',
+            search : /-?(\d*\.)?\d+[*\/]-?(\d*\.)?\d+/,
+            parse : function(searchResult) {
+                let firstOperand = /^-?(\d*\.)?\d+/.exec(searchResult)[0];
+                let secondOperand = /-?(\d*\.)?\d+$/.exec(searchResult)[0];
+                let operator = /[\*\/]/.exec(searchResult)[0];
+                return [firstOperand, secondOperand, operator];
+            }
+            , evaluate : (x, y, op) => op == '*' ? x * y : x / y
         })
         , new DiceOperation({
             name : 'Add',
