@@ -35,6 +35,7 @@ let optionDefaults = {
 
 export let DiceOperation = function(options = {}) {
     let op = this;
+    for(let k in options) { op[k] = options[k]; }
     op.name = options.name || optionDefaults.name;
 
     let search = options.search;
