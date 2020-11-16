@@ -28,5 +28,3 @@ export let DnDModule = {
 		)
 	]
 }
-
-

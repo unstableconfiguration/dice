@@ -59,8 +59,3 @@ export let LoggingRoller = function(options){
     }
     
 }
-
-
-
-
-

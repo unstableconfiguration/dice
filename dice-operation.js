@@ -1,4 +1,3 @@
-
 let optionDefaults = {
     /* Human readable name for the operation. */
     name : 'Unnamed',

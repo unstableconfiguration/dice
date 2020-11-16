@@ -1,6 +1,5 @@
 import { BaseModule } from './modules/base-module.js'
 
-
 /* 
     options = {
         modules : [modules]
@@ -37,6 +36,3 @@ export let DiceRoller = function(options) {
         roller.applyModules(options.modules);
     }
 }
-
-
-
