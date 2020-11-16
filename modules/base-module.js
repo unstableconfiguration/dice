@@ -11,7 +11,7 @@ export let BaseModule = {
         new DiceOperation({
             name : 'dice',
             search : /\d*d\d+/,
-            getOperands : function(searchInput) {
+            parse : function(searchInput) {
                 return searchInput.split(/\D+/);
             },
             evaluate : function(rolls, facets) {

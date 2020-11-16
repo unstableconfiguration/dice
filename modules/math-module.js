@@ -27,7 +27,7 @@ export let MathModule = {
         new DiceOperation({
             name : 'Parentheses',
             search: /\([^()]+\)/,
-            getOperands : (match)=>[match.replace(/[()]/g,'')],
+            parse : (match)=>[match.replace(/[()]/g,'')],
             evaluate : function(x) { return this.parent.solve(x); } 
         })
         , new DiceOperation({
@@ -55,7 +55,7 @@ export let MathModule = {
             name : 'Subtract',
             // Exclude the optional subtraction sign on the second digit
             search : /-?(\d*\.)?\d+[\-](\d*\.)?\d+/, 
-            // The default getOperands behavior returns positive or negative numbers. 
+            // The default parse behavior returns positive or negative numbers. 
             // So if we have 1-4, x and y will be 1 and -4. 
             // Rather than fight this, we can just treat 1-4 as 1+-4 and add them
             evaluate : (x,y) => +x + +y  

@@ -23,7 +23,7 @@ export let DnDModule = {
 					results.sort((x,y) => +x < +y);
 					return JSON.stringify(results);
 				},
-				getOperands : (match)=>[/^\d+/.exec(match)[0], /\d+$/.exec(match)[0]]
+				parse : (match) => match.split(/\D+/) 
 			}
 		)
 	]

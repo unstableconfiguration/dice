@@ -39,6 +39,5 @@ export let DiceRoller = function(options) {
     }
 }
 
-DiceRoller.prototype.Operation = DiceOperation
 
 
