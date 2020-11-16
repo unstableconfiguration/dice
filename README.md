@@ -2,14 +2,14 @@
 ## Dice Roller
 Equation-based dice roller for use in dice-based games. With no modules loaded, it is simply a random number generator that mimics dice rolls.
 
-Base usage: 
+Base usage:  
 '''
 let dice = new DiceRoller();
 let solution = dice.solve('3d6');
 // Expect: solution is a number 3-18
 '''
 
-The lowercase 'd' character identifies a dice roll operation. The number to the right of the d represents the facets of the die. The number to the left of the d is the number of times to roll, if no number is to the left of the d then it will roll once. 
+The dice roller looks for patterns like 'd6' or '1d6' where the 'd' signifies a roll, the number to the left is the number of rolls (default 1 if no number) and the number to the right is the facets of the die.
 
 Example inputs: 
 * d6  - a number 1-6 
@@ -23,11 +23,10 @@ The supported operations are:
 * Multiplication * 
 * Division / 
 * Addition + 
-* Subtraction -
+* Subtraction -  
+The operations evaluate in order.
 
-The operations execute in the above order
-
-Base usage: 
+Base usage:  
 '''
 let dice = new DiceRoller();
 dice.operations.add(math_functions);
@@ -44,13 +43,12 @@ Example inputs:
 #### D&D Module
 The D&D module only needs minor additional functionality to the base dice rolling and math functions. It adds the ability to roll a dice multiple times, but to keep the rolls separate. This is for when the game expects the player to roll twice and pick the higher or lower of the two numbers. 
 
-Base usage:
+Base usage:  
 '''
-let dice = new DiceRoller();
-dice.operations.add(math_functions);
-dice.operations.insert(0, dnd_functions[0]);
+let dice = new DiceRoller({ modules : [MathModule, DnDModule]});
+// dice.applyModules([MathModule, DnDModule]);
 let solution = dice.solve('2xd20+5');
-'''
+'''  
 
 The dnd module's function needs to execute before anything else, so it gets inserted at the front of the operatinos queue. 
 
