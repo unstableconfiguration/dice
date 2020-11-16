@@ -36,13 +36,12 @@
 
 <script type='module'>
     import { DiceRoller } from '../dice.js'
-    import { math } from '../modules/math.js'
-    import { dnd } from '../modules/5e.js'
+    import { MathModule } from '../modules/math-module.js'
+    import { DnDModule } from '../modules/dnd-module.js'
 
     (()=>{
-        let dice = new DiceRoller();
-        dice.operations = dice.operations.concat(math);
-        dice.operations.unshift(dnd[0]);
+        let dice = new DiceRoller({ modules : [MathModule, DnDModule] });
+      
         let input = document.getElementById('diceInput');
         let output = document.getElementById('diceOutput');
         input.addEventListener('keypress', (ev) => { 
