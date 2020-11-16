@@ -1,4 +1,3 @@
-import { DiceOperation } from './dice-operation.js';
 import { BaseModule } from './modules/base-module.js'
 
 
