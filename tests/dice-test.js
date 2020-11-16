@@ -1,7 +1,6 @@
 import { BaseModule } from '../modules/base-module.js';
 let assert = chai.assert;
 
-
 export let DiceTests = () => {
     describe('Dice Roller Tests', function() {
         describe('Search Tests', function() {
