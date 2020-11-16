@@ -11,11 +11,18 @@ export let DiceRoller = function(options) {
     let roller = this;
     roller.operations = [];
 
-    roller.solve = function(input) {
+    op.onSolve = function(equation) {}
+    op.onSolved = function(equation, solution) {}
+    roller.solve = function(equation) {
+        op.onSolve(equation);
+        let solution = equation;
+        
         roller.operations.forEach((op)=>{
-            input = op.evaluate(input);
+            solution = op.evaluate(solution);
         });
-        return input;
+
+        op.onSolved(equation, solution);
+        return solution;
     }
 
     roller.applyModules = function(modules) {
