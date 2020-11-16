@@ -40,30 +40,40 @@ export let DiceOperation = function(options = {}) {
     let op = this;
     op.name = options.name || optionDefaults.name;
 
-    let getSearchFunction = function(search) { 
-        if(typeof(search) === 'function') {
-            return search;
+    let search;
+    if(typeof(options.search) === 'function') { search = options.search; }
+    else if(options.search instanceof RegExp) {
+        search = function(input) {
+            return (new RegExp(options.search).exec(input)||[null])[0];
         }
-        if(search instanceof RegExp) {
-            return function(input) {
-                return (new RegExp(search).exec(input)||[null])[0];
-            }
-        }
-
     }
-
-    op.search = getSearchFunction(options.search);
-
-    op.getOperands = options.getOperands || optionDefaults.getOperands
+    op.onSearched = function(equation, searchResults) {}
+    op.search = function(equation) { 
+        let searchResults = search(equation);
+        op.onSearched(equation, searchResults);
+        return searchResults;
+    } 
     
-    op.evaluate = function(expression) { 
+    let getOperands = options.getOperands || optionDefaults.getOperands;
+    op.onGetOperands = function(searchResult, operands) {}
+    op.getOperands = function(searchResult) { 
+        let operands = getOperands(searchResult);
+        op.onGetOperands(searchResult, operands);
+        return operands;
+    } 
+    
+    op.onEvaluate = function(equation) {}
+    op.onEvaluated = function(equation, expression) { }
+    op.evaluate = function(equation) { 
+        op.onEvaluate(equation)
         let get;
+        let expression = equation;
         while((get = op.search(expression)) !== null) { 
             let operands = op.getOperands(get);
             let result = options.evaluate.apply(op, operands);
-            // if we do 1d4+1d4, would this make them always roll the same?
             expression = expression.replace(get, result);
         }
+        op.onEvaluated(equation, expression);
         return expression
     }
 }
