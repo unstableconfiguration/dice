@@ -1,10 +1,7 @@
 import { DiceOperation } from '../dice-operation.js'
-
-let rand = (r) => Math.floor((Math.random() * r) + 1); 
-            
+          
 export let BaseModule = {
     apply : function(roller) { 
-        this.operations[0].rand = rand;
         roller.operations.unshift(this.operations[0]);
     },
     operations : [
@@ -14,10 +11,13 @@ export let BaseModule = {
             parse : function(searchInput) {
                 return searchInput.split(/\D+/);
             },
+            roll : function(facets) {
+                return Math.floor((Math.random() * facets) + 1);
+            },
             evaluate : function(rolls, facets) {
                 let value = 0;
                 for(let i = 0; i < (rolls||1); i++) {
-                    value += this.rand(facets);
+                    value += this.roll(facets);
                 }
                 return value;
             }
