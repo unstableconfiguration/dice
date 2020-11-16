@@ -30,11 +30,11 @@ export let LoggingRoller = function(options){
             }
 
             if(operation.name === 'dice') {
-                let rand = operation.rand;
-                operation.rand = function(facets) { 
-                    let roll = rand(facets);
-                    rolls.push(roll);
-                    return roll;
+                let roll = operation.roll;
+                operation.roll = function(facets) { 
+                    let result = roll(facets);
+                    rolls.push(result);
+                    return result;
                 }
                 operation.onEvaluated = function(equation, expression) {
                     operationResults.push({
@@ -43,7 +43,7 @@ export let LoggingRoller = function(options){
                         expression : expression,
                         rolls : rolls
                     });
-                    rolls = []
+                    rolls = [];
                 }
             }
 
