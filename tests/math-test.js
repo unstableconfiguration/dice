@@ -1,8 +1,6 @@
 import { MathModule } from '../modules/math-module.js'
-import { DiceRoller } from '../dice.js'
+import { DiceRoller } from '../dice.js';
 let assert = chai.assert
-
-// 3*(6+3^2) is returning 35 for some reason. 
 
 export let MathTests = () => { 
     describe('Math Module Unit Tests', function() {
@@ -231,6 +229,14 @@ export let MathTests = () => {
             });
 
             // Evaluation tests only make sense in the context of the full math module
+        });
+
+        describe('Math Integration Tests', function() { 
+            let roller = new DiceRoller({ modules : [MathModule] });
+            it('should evaluate 3*(6+3^2) as 45', function() {
+                assert(roller.solve('3*(6+3^2)') == '45')
+            });
+            
         });
 
     });
