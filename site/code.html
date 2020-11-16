@@ -11,13 +11,31 @@
     <div class='site-header'>
         <a href=index.html>dice.js</a>
     </div>
+
     <div class='site-content'>
         <p><h3>main code</h3></p>
-        <p>We'll be refactoring this soon, but here's the main dice roller code. </p>
+        <p>The main DiceRoller object is a collection of operations. When .colve(input) is called, 
+            it executes the operations in order. Each operation evaluates and potentially modifies the input, 
+            gradually reducing it to a single value.</p>
         <pre class='language-javascript'><code id='diceCode'></code></pre>
-        <p><h3>math module</h3></p>
+
+        <p><h3>operation</h3></p>
+        <p>An operation performs three tasks. First, it calls .search() on an input equation to look for any 
+            appropriate expressions it can act on. For example, an addition operation will look for a pair of 
+            numbers separated by a + symbol. Then it calls .parse() to extract the operands. Finally it will 
+            evaluate the operands into a value and insert that into the equation. 
+        </p>
+        <pre class='language-javascript'><code id='operationCode'></code></pre>
+
+        <p><h3>example module</h3></p>
+        <p>A module is a collection of operations. The math module adds basic PEMDAS operations so that 
+            the roller can serve as a simple calculator. The module contains both the operation array, 
+            as well as an apply() function that adds them to the oprations of a parent roller. 
+        </p>
         <pre class='language-javascript'><code id='mathCode'></code></pre>
     </div>
+    <div id='filler' style='height:200px;'></div>
+
 </body>
 
 <script>
@@ -33,7 +51,12 @@
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../modules/math.js', (text) => { 
+        fetchCode('../dice-operation.js', (text) => { 
+            document.getElementById('operationCode').innerHTML = 
+                Prism.highlight(text, Prism.languages.javascript, 'javascript');
+        });
+
+        fetchCode('../modules/math-module.js', (text) => { 
             document.getElementById('mathCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
