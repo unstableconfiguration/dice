@@ -1,34 +1,55 @@
 import { DiceRoller } from '../dice.js'
-// to log things. 
 
-export let LoggingRoller = function(){
-    DiceRoller.call(this);
+export let LoggingRoller = function(options){
+    DiceRoller.call(this, options);
     let roller = this;
 
     roller.solutions = [];
+    let operationResults = [];
+
+    roller.onSolve = function(equation) {
+        operationResults = []
+    }
     roller.onSolved = function(equation, solution) {
         roller.solutions.push({
             equation : equation,
             solution : solution,
-            operations : roller.operationOutcomes //.splice(0)
+            operations : operationResults 
         });
     }
  
-    roller.operationOutcomes = [];
-
+    let rolls = [];
     let setOperationLog = function() {
         roller.operations.forEach(operation => { 
             operation.onEvaluated = function(equation, expression) {
-                roller.operationOutcomes.push({
+                operationResults.push({
                     name : this.name,
-                    equation : this.equation,
-                    expression : this.expression,
+                    equation : equation,
+                    expression : expression,
                 });
             }
+
+            if(operation.name === 'dice') {
+                let rand = operation.rand;
+                operation.rand = function(facets) { 
+                    let roll = rand(facets);
+                    rolls.push(roll);
+                    return roll;
+                }
+                operation.onEvaluated = function(equation, expression) {
+                    operationResults.push({
+                        name : 'dice',
+                        equation : equation,
+                        expression : expression,
+                        rolls : rolls
+                    });
+                    rolls = []
+                }
+            }
+
+
         });
     }
-
-    // missing: logging individual rolls.
 
     setOperationLog();
     let applyModules = roller.applyModules;
@@ -36,7 +57,7 @@ export let LoggingRoller = function(){
         applyModules(modules);
         setOperationLog();
     }
-
+    
 }
 
 
