@@ -6,21 +6,22 @@
 </head>
 <body>
     <div class='site-header'>
-        <a href=index.html>dice.js</a>
+        <a href=../index.html>dice.js</a>
     </div>
     <div class='site-content'>
         <p><h3>demo</h3></p>
+        <input id='diceInput' placeHolder='example:2d6+4'>
         <p>Example inputs: </p>
-        <ul>
-            <li>d6 or 1d6: roll 1 six-sided die (random number 1-6)</li>
-            <li>3d6: roll 3 six sided die and return the sum of the rolls (random number 3-18)</li>
-            <li>5+4*2 or (5+4)*2: Solves the given math equation</li>
-            <li>d20+1d6+5: adding the results of multiple rolls</li>
-            <li>2xd20: This will roll two twenty-sided die, but will keep the rolls separated. This functionality 
-                added by the 'dungeons and dragons' module where the game rules sometimes require you to pick the higher or lower of two rolls.
+        <ul class='text-small'>
+            <li>2d6: Die rolls. 2d6 rolls two six-sided die and returns the sum of the rolls.</li>
+            <li>(2+6/2)^2: Math equations. Supports parentheses (), exponents ^, multiplication *, division /, addition +, and subtraction - </li>
+            <li>d20+1d6+5: Combination of multiple rolls and math.</li>
+            <li>2xd20: Will roll two twenty-sided die, but will keep the rolls separated. Used in game rules where the player 
+                selects the higher or lower of two rolls. 
             </li>
         </ul>
-        <input id='diceInput' placeHolder='example:3d6+4'>
+        
+        
         <span id='diceOutput'>Output: </span>
         <p><h3>functionality</h3></p>
         <p>The dice roller is modular. With no modules loaded, it is a simple random number generator. Each module extends its functionality. The idea behind this is that it can be tailored for different games where different types of dice rolls need to be made. 
