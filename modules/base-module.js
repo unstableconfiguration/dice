@@ -2,7 +2,8 @@ import { DiceOperation } from '../dice-operation.js'
           
 export let BaseModule = {
     apply : function(roller) { 
-        roller.operations.unshift(this.operations[0]);
+        let diceOp = {...this.operations[0]};
+        roller.operations.unshift(diceOp);
     },
     operations : [
         new DiceOperation({
