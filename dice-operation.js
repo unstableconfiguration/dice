@@ -44,7 +44,7 @@ export let DiceOperation = function(options = {}) {
         }
     }
 
-    op.onSearched = function(equation, searchResults) {}
+    op.onSearched = function(equation, searchResults) { }
     op.search = function(equation) { 
         let searchResults = search(equation);
 
@@ -53,7 +53,7 @@ export let DiceOperation = function(options = {}) {
     } 
     
     let parse = options.parse || optionDefaults.parse;
-    op.onParsed = function(searchResult, operands) {}
+    op.onParsed = function(searchResult, operands) { }
     op.parse = function(searchResult) { 
         let operands = parse(searchResult);
 
@@ -61,10 +61,8 @@ export let DiceOperation = function(options = {}) {
         return operands;
     } 
     
-    op.onEvaluate = function(equation) {}
     op.onEvaluated = function(equation, expression) { }
     op.evaluate = function(equation) { 
-        op.onEvaluate(equation)
         let get;
         let expression = equation;
         while((get = op.search(expression)) !== null) { 

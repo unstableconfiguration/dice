@@ -9,7 +9,6 @@ export let DiceRoller = function(options) {
     let roller = this;
     roller.operations = [];
 
-    roller.onSolve = function(equation) {}
     roller.onSolved = function(equation, solution) {}
     roller.solve = function(equation) {
         roller.onSolve(equation);
