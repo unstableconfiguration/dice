@@ -1,10 +1,10 @@
 import { DiceOperation } from '../dice-operation.js'
           
-export let BaseModule = {
-    apply : function(roller) { 
+export let BaseModule = function() {
+    this.apply = function(roller) { 
         roller.operations.unshift(this.operations[0]);
-    },
-    operations : [
+    }
+    this.operations = [
         new DiceOperation({
             name : 'dice',
             search : /\d*d\d+/,
@@ -22,5 +22,5 @@ export let BaseModule = {
                 return value;
             }
         })
-    ]
+    ];
 }

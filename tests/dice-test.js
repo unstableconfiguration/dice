@@ -4,7 +4,7 @@ let assert = chai.assert;
 export let DiceTests = () => {
     describe('Dice Roller Tests', function() {
         describe('Search Tests', function() {
-            let diceOperation = BaseModule.operations[0];
+            let diceOperation = new BaseModule().operations[0];
             let searchTests = [
                 { input : '1d4', output : '1d4', note : 'should match 1d4' },
                 { input : 'd4', output : 'd4', note : 'should match d4' },
@@ -23,7 +23,7 @@ export let DiceTests = () => {
         });
 
         describe('Parse Tests', function() { 
-            let diceOperation = BaseModule.operations[0];
+            let diceOperation = new BaseModule().operations[0];
             let parseTests = [
                 { input : '3d6', output : ['3', '6'], note : 'should split 3d6 into [3, 6]'},
                 { input : 'd6', output : ['', '6'], note : `should split d6 into ['', 6]`},
@@ -37,7 +37,7 @@ export let DiceTests = () => {
         });
 
         describe('Evaluation Tests', function() { 
-            let diceOperation = BaseModule.operations[0];
+            let diceOperation = new BaseModule().operations[0];
             it('should replace "d4" with a number 1-4', function() { 
                 let output = diceOperation.evaluate('d4');
                 assert(+output <= 4 && +output >= 1 )
@@ -58,7 +58,7 @@ export let DiceTests = () => {
         });
 
         describe('Randomizer', function() { 
-            let diceOperation = BaseModule.operations[0];
+            let diceOperation = new BaseModule().operations[0];
             let min = 12, max = 0;
             for(let i = 0; i < 1000; i++) {
                 let output = diceOperation.evaluate('2d6');

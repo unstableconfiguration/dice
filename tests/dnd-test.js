@@ -7,7 +7,7 @@ export let DnDTests = () => {
         let roller = new DiceRoller({ modules : [DnDModule]});
 
         describe('Advantage/Disadvantage', function() {
-            let advantage = DnDModule.operations[0];
+            let advantage = new DnDModule().operations[0];
             describe('Searching', function(){
                 let searchTests = [
                     { input : '2xd20', output : '2xd20', note : `matches 2xd20` },

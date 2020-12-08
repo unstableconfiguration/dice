@@ -15,15 +15,15 @@ import { DiceOperation } from '../dice-operation.js'
         -.1
 */
 
-export let MathModule = {
-    apply : function(roller) {
+export let MathModule = function() {
+    this.apply = function(roller) {
         this.operations.forEach(op => {
             // Parentheses needs a reference to the roller for recursion 
             op.parent = roller;
             roller.operations.push(op);
         });
-    },
-    operations : [
+    }
+    this.operations = [
         new DiceOperation({
             name : 'Parentheses',
             search: /\([^()]+\)/,

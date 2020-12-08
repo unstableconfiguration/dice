@@ -6,7 +6,7 @@ export let MathTests = () => {
     describe('Math Module Unit Tests', function() {
 
         describe('Addition', function() { 
-            let addOperation = MathModule.operations.find(mod => mod.name == 'Add');
+            let addOperation = new MathModule().operations.find(mod => mod.name == 'Add');
             describe('Search Tests', function() { 
                 let addSearchTests = [
                     { input : '1+2', output : '1+2', note : `should match 1+2` },
@@ -46,7 +46,7 @@ export let MathTests = () => {
 
         
         describe('Subtraction', function() { 
-            let subtractOperation = MathModule.operations.find(mod => mod.name == 'Subtract');
+            let subtractOperation = new MathModule().operations.find(mod => mod.name == 'Subtract');
             describe('Search Tests', function() { 
                 let addSearchTests = [
                     { input : '1-2', output : '1-2', note : `should match 1-2` },
@@ -85,7 +85,7 @@ export let MathTests = () => {
         });
 
         describe('Multiplication and Division Tests', function() { 
-            let multDivOperation = MathModule.operations.find(op => op.name == 'MultiplyAndDivide');
+            let multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyAndDivide');
             describe('Search Tests', function() { 
                 let searchTests = [
                     { input : '1*2', output : '1*2', note : 'matches 1*2' },
@@ -139,7 +139,7 @@ export let MathTests = () => {
         });
 
         describe('Exponents Tests', function() { 
-            let exponentOperation = MathModule.operations.find(op => op.name == 'Exponents');
+            let exponentOperation = new MathModule().operations.find(op => op.name == 'Exponents');
             describe('Search Tests', function() { 
                 let searchTests = [
                     { input : '2^2', output : '2^2', note : 'matches 2^2' },
@@ -178,7 +178,7 @@ export let MathTests = () => {
         });
 
         describe('Parentheses Tests', function() { 
-            let parenthesesOperation = MathModule.operations.find(op => op.name == 'Parentheses');
+            let parenthesesOperation = new MathModule().operations.find(op => op.name == 'Parentheses');
             describe('Search Tests', function() {
                 let searchTests = [
                     { input : '(1+2)', output : '(1+2)', note : 'should match (1+2)'},

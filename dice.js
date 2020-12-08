@@ -24,12 +24,12 @@ export let DiceRoller = function(options) {
     roller.applyModules = function(modules) {
         if(!Array.isArray(modules)) { modules = [modules]; }
         modules.forEach(module => {
-            module.apply(roller);
+            new module().apply(roller);
         });
     }
 
     // Seed with dice roll operation
-    BaseModule.apply(roller);
+    roller.applyModules(BaseModule);
     if(options && options.modules) {
         roller.applyModules(options.modules);
     }

@@ -1,12 +1,12 @@
 import { DiceOperation } from '../dice-operation.js'
 
-export let DnDModule = {
-	apply : function(roller) { 
+export let DnDModule = function() {
+	this.apply = function(roller) { 
 		let advantage = this.operations[0];
 		advantage.parent = roller;
 		roller.operations.unshift(advantage);
-	},
-	operations : [
+	}
+	this.operations = [
 		/* The game frequently asks the player to roll a twenty-sided die twice and pick the higher 
 			or lower of the two rolls. 
 			using the syntax 2xd20 it will roll the die twice and separate the results into an array. 
