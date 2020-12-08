@@ -11,7 +11,6 @@ export let DiceRoller = function(options) {
 
     roller.onSolved = function(equation, solution) {}
     roller.solve = function(equation) {
-        roller.onSolve(equation);
         let solution = equation;
         
         roller.operations.forEach((op)=>{
