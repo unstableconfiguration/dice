@@ -60,14 +60,26 @@ export let DiceOperation = function(options = {}) {
         op.onParsed(expression, operands);
         return operands;
     } 
+
+    let resolve = options.resolve;
+    op.onResolved = function(operands, result) { }
+    op.resolve = function(operands) { 
+        let result = resolve.apply(op, operands);
+        
+        op.onResolved(operands, result);
+        return result;
+    }
     
+    op.onEvaluate = function(equation) { }
     op.onEvaluated = function(equation, expression) { }
     op.evaluate = function(equation) { 
+        op.onEvaluate(equation);
         let input = equation;
         let expression;
+
         while((expression = op.search(equation)) !== null) { 
             let operands = op.parse(expression);
-            let result = op.resolve.apply(op, operands);
+            let result = op.resolve(operands);
             equation = equation.replace(expression, result);
         }
         op.onEvaluated(input, equation);
