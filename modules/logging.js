@@ -8,6 +8,7 @@ import { DiceRoller } from '../dice.js'
             operations : [
                 { 
                     name : '',
+                    expression : '',
                     search : [ { equation : '', expression : '' } ],
                     parse : [ { expression : '', operands : [] } ],
                     resolve : [ { operands : [], result : '' } ],
@@ -16,8 +17,10 @@ import { DiceRoller } from '../dice.js'
             ]
         }
     ];
-
 */
+let getCurrentOp = function(roller) { 
+    return roller.log.slice(-1)[0].operations.slice(-1)[0];
+}
 
 export let LoggingModule = function() {
     this.apply = function(roller) { 
@@ -33,8 +36,9 @@ export let LoggingModule = function() {
         this.onParsed(roller);
         this.onResolved(roller);
 
-        //this.onRoll(roller);
-
+        this.onDiceResolve(roller);
+        this.onDiceRoll(roller);
+        this.onDiceResolved(roller);
     }
     /* On solve, push log object to .log array and capture input equation */
     this.onSolve = function(roller) { 
@@ -44,7 +48,6 @@ export let LoggingModule = function() {
                 equation : equation, 
                 solution : '', 
                 operations : [],
-                rolls : [] 
             });
             return onSolve(equation);
         }
@@ -77,7 +80,7 @@ export let LoggingModule = function() {
         roller.operations.forEach(op => {
             let onEvaluated = op.onEvaluated;
             op.onEvaluated = function(input, equation) { 
-                roller.log.slice(-1)[0].operations.slice(-1)[0]
+                getCurrentOp(roller)
                     .evaluate = { input : input, equation : equation };
                 
                 return onEvaluated(input, equation);
@@ -88,8 +91,8 @@ export let LoggingModule = function() {
         roller.operations.forEach(op => {
             let onSearched = op.onSearched;
             op.onSearched = function(equation, expression) { 
-                roller.log.slice(-1)[0].operations.slice(-1)[0]
-                    .search.push({ equation : equation, expression : expression });
+                getCurrentOp(roller).search
+                    .push({ equation : equation, expression : expression });
         
                 return onSearched(equation, expression);
             }  
@@ -99,8 +102,8 @@ export let LoggingModule = function() {
         roller.operations.forEach(op => {
             let onParsed = op.onParsed;
             op.onParsed = function(expression, operands) {
-                roller.log.slice(-1)[0].operations.slice(-1)[0]
-                    .parse.push({ expression : expression, operands : operands });
+                getCurrentOp(roller).parse
+                    .push({ expression : expression, operands : operands });
 
                 return onParsed(expression, operands);
             }
@@ -110,62 +113,47 @@ export let LoggingModule = function() {
         roller.operations.forEach(op => {
             let onResolved = op.onResolved;
             op.onResolved = function(operands, result) {
-                roller.log.slice(-1)[0].operations.slice(-1)[0]
-                    .resolve.push({ operands : operands, result : result });
+                getCurrentOp(roller).resolve
+                    .push({ operands : operands, result : result });
 
                 return onResolved(operands, result);
             }
         });
     }
 
-}
+    /* onResolve : add a rolls array to contain our dice roll results */
+    this.onDiceResolve = function(roller) { 
+        let diceOp = roller.operations.find(op => op.name === 'dice');
+        
+        let onResolve = diceOp.onResolve;
+        diceOp.onResolve = function(operands) {
+            getCurrentOp(roller).rolls = [];
 
-
-export let LoggingRoller = function(options){
-    DiceRoller.call(this, options);
-    let roller = this;
-
-    roller.solutions = [];
-    let operationResults = [];
-
-    let rolls = [];
-    let setOperationLog = function() {
-        roller.operations.forEach(operation => { 
-            operation.onEvaluated = function(equation, expression) {
-                operationResults.push({
-                    name : this.name,
-                    equation : equation,
-                    expression : expression,
-                });
-            }
-
-            if(operation.name === 'dice') {
-                let roll = operation.roll;
-                operation.roll = function(facets) { 
-                    let result = roll(facets);
-                    rolls.push(result);
-                    return result;
-                }
-                operation.onEvaluated = function(equation, expression) {
-                    operationResults.push({
-                        name : 'dice',
-                        equation : equation,
-                        expression : expression,
-                        rolls : rolls
-                    });
-                    rolls = [];
-                }
-            }
-
-
-        });
+            return onResolve(operands);
+        } 
     }
+    this.onDiceRoll = function(roller) { 
+        let diceOp = roller.operations.find(op => op.name === 'dice');
+        let roll = diceOp.roll;
+        diceOp.roll = function(facets) {
+            let rollResult = roll(facets);
 
-    setOperationLog();
-    let applyModules = roller.applyModules;
-    roller.applyModules = function(modules) {
-        applyModules(modules);
-        setOperationLog();
+            getCurrentOp(roller).rolls.push(rollResult);
+            return rollResult;
+        }
     }
-    
+    this.onDiceResolved = function(roller) { 
+        let diceOp = roller.operations.find(op => op.name === 'dice');
+        
+        let onResolved = diceOp.onResolved;
+        diceOp.onResolved = function(operands, result) {
+            let resolved = onResolved(operands, result);
+            
+            let diceLog = getCurrentOp(roller);
+            diceLog.resolve.slice(-1)[0].rolls = diceLog.rolls;
+            delete diceLog.rolls;
+
+            return resolved;
+        }
+    }
 }
