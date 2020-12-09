@@ -1,7 +1,6 @@
 import { LoggingModule } from '../modules/logging.js'
 import { DiceRoller } from '../dice.js'
 
-
 export let LoggingTests = () => {
     let assert = chai.assert;
 
@@ -13,7 +12,7 @@ export let LoggingTests = () => {
             });
         });
 
-        describe('logging', function() { 
+        describe('general logging', function() { 
             it('should record results in a .log array', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('3d6');
@@ -23,24 +22,47 @@ export let LoggingTests = () => {
             it('should record the input in each log', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('1d4');
-                assert(roller.log.slice(-1)[0].input === '1d4');
+                assert(roller.log.pop().input === '1d4');
             });
             it('should record the output in each log', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('4d1');
-                assert(roller.log.slice(-1)[0].solution === '4');
+                assert(roller.log.pop().solution === '4');
             });
+            it('should record the onSearch event', function() {
+                let roller = new DiceRoller({ modules : [LoggingModule]});
+                roller.solve('10d10');
+                let logged = roller.log.pop();
+                assert(logged.equation == '10d10' && logged.searchResults == '10d10');
+            });
+            it('should record the onParsed event', function() { 
+                let roller = new DiceRoller({ modules : [LoggingModule]});
+                roller.solve('2d6');
+                let logged = roller.log.pop();
+                assert(logged.searchResults == 'd6' && logged.operands[0] == '2');
+            });
+            it('should record the onEvaluated event', function() { 
+                let roller = new DiceRoller({ modules : [LoggingModule]});
+                roller.solve('6d1');
+                let logged = roller.log.pop();
+                assert(logged.equation == "6d1" && logged.expression == "6");
+            });
+
+
+        });
+        describe('dice logging', function() {
             it('should record rolls in a .log[n].rolls array', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('3d8+2d4');
-                assert(roller.log.slice(-1)[0].rolls.length === 2);
+                assert(roller.log.pop().rolls.length === 2);
             });
             it('should record the roll expression and output array', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('2d10');
-                assert(roller.log.slice(-1)[0].rolls[0].expression === '2d10');
-                assert(roller.log.slice(-1)[0].rolls[0].results.length === 2);
+                assert(roller.log.pop().rolls[0].expression === '2d10');
+                assert(roller.log.pop().rolls[0].results.length === 2);
             });
+        
         });
 
     });
