@@ -60,14 +60,8 @@ export let LoggingTests = () => {
             it('should record rolls in a .log[n].rolls array', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('3d8+2d4');
-                let logged = roller.log.slice(-1)[0].operations.slice(-1)[0]
-                assert(roller.log.slice(-1)[0].rolls.length === 2);
-            });
-            it('should record the roll expression and output array', function() { 
-                let roller = new DiceRoller({ modules : [LoggingModule]});
-                roller.solve('2d10');
-                assert(roller.log.slice(-1)[0].rolls[0].expression === '2d10');
-                assert(roller.log.slice(-1)[0].rolls[0].results.length === 2);
+                let logged = roller.log.slice(-1)[0].operations.slice(-1)[0];
+                assert(logged.resolve[0].rolls.length == 3 && logged.resolve[1].rolls.length == 2);
             });
         
         });
