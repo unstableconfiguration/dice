@@ -1,31 +1,38 @@
 import { DiceRoller } from '../dice.js'
 
-export let LoggingModule = {
-    apply : function(roller) { 
+export let LoggingModule = function() {
+    this.apply = function(roller) { 
         roller.log = [];
         
         this.applyOnSolve(roller);
         this.applyOnSolved(roller);
-        // on solve 
-            // collect input
-        // on solved
-            // collect output 
+        
+        this.applyEvaluate(roller);
+
         // on roll 
             // collect expression 
             // collect rolls array
-    },
-    applyOnSolve : function(roller) { 
+    }
+    this.applyOnSolve = function(roller) { 
         let onSolve = roller.onSolve;
         roller.onSolve = function(equation) { 
-            roller.log.push({ input : equation });
-            onSolve(equation);
+            roller.log.push({ input : equation, solution : '', rolls : [] });
+            return onSolve(equation);
         }
     },
-    applyOnSolved : function(roller) { 
+    this.applyOnSolved = function(roller) { 
         let onSolved = roller.onSolved;
         roller.onSolved = function(equation, solution) { 
             roller.log.slice(-1)[0].solution = solution;
-            onSolved(equation, solution);
+            return onSolved(equation, solution);
+        }
+    }, 
+    this.applyEvaluate = function(roller) { 
+        let diceOp = roller.operations.find(op => op.name == 'dice');
+        let evaluate = diceOp.evaluate;
+        diceOp.evaluate = function(expression) {
+            roller.log.slice(-1)[0].rolls.push({ expression : expression });
+            return evaluate(expression);
         }
     }
 }
@@ -38,17 +45,6 @@ export let LoggingRoller = function(options){
     roller.solutions = [];
     let operationResults = [];
 
-    roller.onSolve = function(equation) {
-        operationResults = []
-    }
-    roller.onSolved = function(equation, solution) {
-        roller.solutions.push({
-            equation : equation,
-            solution : solution,
-            operations : operationResults 
-        });
-    }
- 
     let rolls = [];
     let setOperationLog = function() {
         roller.operations.forEach(operation => { 
