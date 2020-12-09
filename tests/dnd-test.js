@@ -27,18 +27,18 @@ export let DnDTests = () => {
                     { input : '8xd6', output : ['8','6'], note : `parses 8xd6 into [8, 6]` },
                 ];
                 parseTests.forEach(test=>{
-                    it(test.note, function(){
+                    it(test.note, function() {     
                         assert.isTrue(JSON.stringify(test.output) == JSON.stringify(advantage.parse(test.input)));
                     })
                 })
             });
             describe('Evaluation', function(){
                 it('should convert 2xd20 to an array of two numbers 1-20', function() { 
-                    let solution = advantage.evaluate('2xd20');
+                    let solution = roller.solve('2xd20');
                     assert(/\[\d{1,2}\,\d{1,2}]/.test(solution));
                 });
                 it('should sort the result array in descending order', function() { 
-                    let solution = JSON.parse(advantage.evaluate('20xd20'));
+                    let solution = JSON.parse(roller.solve('20xd20'));
                     let copy = solution.slice();
                     copy.sort((x, y) => x < y);
                     assert(JSON.stringify(solution) == JSON.stringify(copy));
