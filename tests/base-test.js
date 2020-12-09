@@ -23,8 +23,8 @@ export let BaseTests = function() {
             });
             it('should call .onParsed when an operation parses the input', function(done) { 
                 let roller = new DiceRoller();
-                roller.operations[0].onParsed = function(searchResult, operands) { 
-                    assert(searchResult == '5d12' && operands[0] == 5);
+                roller.operations[0].onParsed = function(expression, operands) { 
+                    assert(expression == '5d12' && operands[0] == 5);
                     done();
                 }
                 roller.solve('5d12');

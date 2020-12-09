@@ -13,13 +13,13 @@ let optionDefaults = {
         Example: would accept '1+2' and return an [1, 2] for an addition operation.    
         Default: Returns all numbers of one or more digits including negatives and decimals
     */
-    parse : function(searchResult) { 
+    parse : function(expression) { 
         // -?  optional minus sign for negative numbers 
         // (\d*\.)? optional 0 or more numbers followed by a . for decimals
         // \d+  required at least one number of one or more digits
         let number = /-?(\d*\.)?\d+/g
         let get = null, operands = [];
-        while(get = number.exec(searchResult)){
+        while(get = number.exec(expression)){
             operands.push(get[0]);
         }
         return operands;
@@ -28,7 +28,7 @@ let optionDefaults = {
     /* Accepts the operands from parse and returns a single string value
         Example: if the operands are [1, 2] and it is an addition operation, this would return "3"
     */
-    evaluate : function(operands) { }
+    resolve : function(operands) { }
 }
 
 
@@ -44,33 +44,33 @@ export let DiceOperation = function(options = {}) {
         }
     }
 
-    op.onSearched = function(equation, searchResults) { }
+    op.onSearched = function(equation, expression) { }
     op.search = function(equation) { 
-        let searchResults = search(equation);
+        let expression = search(equation);
 
-        op.onSearched(equation, searchResults);
-        return searchResults;
+        op.onSearched(equation, expression);
+        return expression;
     } 
     
     let parse = options.parse || optionDefaults.parse;
-    op.onParsed = function(searchResult, operands) { }
-    op.parse = function(searchResult) { 
-        let operands = parse(searchResult);
+    op.onParsed = function(expression, operands) { }
+    op.parse = function(expression) { 
+        let operands = parse(expression);
 
-        op.onParsed(searchResult, operands);
+        op.onParsed(expression, operands);
         return operands;
     } 
     
     op.onEvaluated = function(equation, expression) { }
     op.evaluate = function(equation) { 
-        let get;
-        let expression = equation;
-        while((get = op.search(expression)) !== null) { 
-            let operands = op.parse(get);
-            let result = options.evaluate.apply(op, operands);
-            expression = expression.replace(get, result);
+        let input = equation;
+        let expression;
+        while((expression = op.search(equation)) !== null) { 
+            let operands = op.parse(expression);
+            let result = op.resolve.apply(op, operands);
+            equation = equation.replace(expression, result);
         }
-        op.onEvaluated(equation, expression);
-        return expression
+        op.onEvaluated(input, equation);
+        return equation
     }
 }

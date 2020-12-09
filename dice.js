@@ -9,18 +9,18 @@ export let DiceRoller = function(options) {
     let roller = this;
     roller.operations = [];
 
-    roller.onSolve = function(equation, solution) { }
+    roller.onSolve = function(equation) { }
     roller.onSolved = function(equation, solution) { }
     roller.solve = function(equation) {
-        let solution = equation;
+        let input = equation;
         roller.onSolve(equation);
 
         roller.operations.forEach((op)=>{
-            solution = op.evaluate(solution);
+            equation = op.evaluate(equation);
         });
 
-        roller.onSolved(equation, solution);
-        return solution;
+        roller.onSolved(input, equation);
+        return equation;
     }
 
     roller.applyModules = function(modules) {

@@ -8,13 +8,13 @@ export let BaseModule = function() {
         new DiceOperation({
             name : 'dice',
             search : /\d*d\d+/,
-            parse : function(searchInput) {
-                return searchInput.split(/\D+/);
+            parse : function(expression) {
+                return expression.split(/\D+/);
             },
             roll : function(facets) {
                 return Math.floor((Math.random() * facets) + 1);
             },
-            evaluate : function(rolls, facets) {
+            resolve : function(rolls, facets) {
                 let value = 0;
                 for(let i = 0; i < (rolls||1); i++) {
                     value += this.roll(facets);

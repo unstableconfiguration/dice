@@ -14,7 +14,7 @@ export let DnDModule = function() {
 		new DiceOperation({
 				name : 'Advantage',
 				search : /\d+xd\d+/,
-				evaluate : function(repetitions, facets){
+				resolve : function(repetitions, facets){
 					let operation = this;
 					// 2xd20 becomes [d20, d20]. We then let the roller solve each d20 
 					let results = Array(+repetitions).fill('d' + facets)
