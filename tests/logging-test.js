@@ -50,7 +50,6 @@ export let LoggingTests = () => {
             it('should record the onEvaluated event', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('6d1');
-                window.roller = roller;
                 let logged = roller.log[0].operations[0].evaluate;
 
                 assert(logged.input == "6d1" && logged.equation == "6");
@@ -61,6 +60,7 @@ export let LoggingTests = () => {
             it('should record rolls in a .log[n].rolls array', function() { 
                 let roller = new DiceRoller({ modules : [LoggingModule]});
                 roller.solve('3d8+2d4');
+                let logged = roller.log.slice(-1)[0].operations.slice(-1)[0]
                 assert(roller.log.slice(-1)[0].rolls.length === 2);
             });
             it('should record the roll expression and output array', function() { 

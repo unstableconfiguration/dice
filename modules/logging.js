@@ -1,17 +1,23 @@
 import { DiceRoller } from '../dice.js'
 
-// for each .solve()
-    // log input
-    // log output 
-    // for each operation 
-        // log name 
-        // log onSearched
-        // log onParsed
-        // log onEvaluated
-    // for dice rolls 
-        // log expression 
-        // log rolls array
+/*  Log structure :
+    roller.log : [
+        {
+            equation : '',
+            solution : '',
+            operations : [
+                { 
+                    name : '',
+                    search : [ { equation : '', expression : '' } ],
+                    parse : [ { expression : '', operands : [] } ],
+                    resolve : [ { operands : [], result : '' } ],
+                    evaluate : { input : '', equation : ''  }
+                }
+            ]
+        }
+    ];
 
+*/
 
 export let LoggingModule = function() {
     this.apply = function(roller) { 
@@ -51,6 +57,7 @@ export let LoggingModule = function() {
             return onSolved(equation, solution);
         }
     }
+    /* on evaluate, add operation to operations array */
     this.onEvaluate = function(roller) {
         roller.operations.forEach(op => {
             let onEvaluate = op.onEvaluate;
@@ -61,21 +68,22 @@ export let LoggingModule = function() {
                     parse : [], 
                     resolve : []
                 });
+                return onEvaluate(equation);
             }
         });
     }
+    /* on evaluated, log input and modified equation */
     this.onEvaluated = function(roller) { 
         roller.operations.forEach(op => {
             let onEvaluated = op.onEvaluated;
             op.onEvaluated = function(input, equation) { 
                 roller.log.slice(-1)[0].operations.slice(-1)[0]
                     .evaluate = { input : input, equation : equation };
-                console.log(roller.log.slice(-1)[0])
+                
                 return onEvaluated(input, equation);
             }
         });
     }
-
     this.onSearched = function(roller) { 
         roller.operations.forEach(op => {
             let onSearched = op.onSearched;
@@ -110,19 +118,6 @@ export let LoggingModule = function() {
         });
     }
 
-
-
-    this.evaluate = function(roller) { 
-        let diceOp = roller.operations.find(op => op.name == 'dice');
-        let evaluate = diceOp.evaluate;
-        diceOp.evaluate = function(expression) {
-            roller.log.slice(-1)[0].rolls.push({ expression : expression });
-            return evaluate(expression);
-        }
-    }
-    this.onRoll = function(roller) {
-        // 
-    }
 }
 
 
