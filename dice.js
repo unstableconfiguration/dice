@@ -9,10 +9,12 @@ export let DiceRoller = function(options) {
     let roller = this;
     roller.operations = [];
 
-    roller.onSolved = function(equation, solution) {}
+    roller.onSolve = function(equation, solution) { }
+    roller.onSolved = function(equation, solution) { }
     roller.solve = function(equation) {
         let solution = equation;
-        
+        roller.onSolve(equation);
+
         roller.operations.forEach((op)=>{
             solution = op.evaluate(solution);
         });
