@@ -1,4 +1,4 @@
-import { LoggingModule } from '../modules/logging.js'
+import { LoggingModule } from '../modules/logging-module.js'
 import { DiceRoller } from '../dice.js'
 
 export let LoggingTests = () => {

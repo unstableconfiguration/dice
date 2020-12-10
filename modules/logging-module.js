@@ -152,7 +152,8 @@ export let LoggingModule = function() {
         diceOp.onResolved = function(operands, result) {
             let resolved = onResolved(operands, result);
             
-            let diceLog = getCurrentOp(roller).resolve
+            let diceLog = getCurrentOp(roller)
+            diceLog.resolve
                 .slice(-1)[0].rolls = diceLog.rolls;
             delete diceLog.rolls;
 
