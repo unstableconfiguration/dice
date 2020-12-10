@@ -1,5 +1,3 @@
-import { DiceRoller } from '../dice.js'
-
 /*  Log structure :
     roller.log : [
         {
@@ -40,7 +38,7 @@ export let LoggingModule = function() {
         this.onDiceRoll(roller);
         this.onDiceResolved(roller);
     }
-    /* On solve, push log object to .log array and capture input equation */
+
     this.onSolve = function(roller) { 
         let onSolve = roller.onSolve;
         roller.onSolve = function(equation) { 
@@ -52,7 +50,7 @@ export let LoggingModule = function() {
             return onSolve(equation);
         }
     }
-    /* On solved, log solution in log object */
+
     this.onSolved = function(roller) { 
         let onSolved = roller.onSolved;
         roller.onSolved = function(equation, solution) { 
@@ -60,7 +58,7 @@ export let LoggingModule = function() {
             return onSolved(equation, solution);
         }
     }
-    /* on evaluate, add operation to operations array */
+
     this.onEvaluate = function(roller) {
         roller.operations.forEach(op => {
             let onEvaluate = op.onEvaluate;
@@ -75,7 +73,7 @@ export let LoggingModule = function() {
             }
         });
     }
-    /* on evaluated, log input and modified equation */
+
     this.onEvaluated = function(roller) { 
         roller.operations.forEach(op => {
             let onEvaluated = op.onEvaluated;
@@ -87,6 +85,7 @@ export let LoggingModule = function() {
             }
         });
     }
+    
     this.onSearched = function(roller) { 
         roller.operations.forEach(op => {
             let onSearched = op.onSearched;
@@ -98,6 +97,7 @@ export let LoggingModule = function() {
             }  
         });
     }
+    
     this.onParsed = function(roller) { 
         roller.operations.forEach(op => {
             let onParsed = op.onParsed;
@@ -109,6 +109,7 @@ export let LoggingModule = function() {
             }
         });
     }
+    
     this.onResolved = function(roller) {
         roller.operations.forEach(op => {
             let onResolved = op.onResolved;
@@ -121,7 +122,7 @@ export let LoggingModule = function() {
         });
     }
 
-    /* onResolve : add a rolls array to contain our dice roll results */
+    /* Before rolling, add empty operation.rolls array */
     this.onDiceResolve = function(roller) { 
         let diceOp = roller.operations.find(op => op.name === 'dice');
         
@@ -132,6 +133,7 @@ export let LoggingModule = function() {
             return onResolve(operands);
         } 
     }
+    /* For each roll, add roll result to operation.rolls array */
     this.onDiceRoll = function(roller) { 
         let diceOp = roller.operations.find(op => op.name === 'dice');
         let roll = diceOp.roll;
@@ -142,6 +144,7 @@ export let LoggingModule = function() {
             return rollResult;
         }
     }
+    /* After rolling, move operation.rolls to operation.resolve.rolls */
     this.onDiceResolved = function(roller) { 
         let diceOp = roller.operations.find(op => op.name === 'dice');
         
@@ -149,8 +152,8 @@ export let LoggingModule = function() {
         diceOp.onResolved = function(operands, result) {
             let resolved = onResolved(operands, result);
             
-            let diceLog = getCurrentOp(roller);
-            diceLog.resolve.slice(-1)[0].rolls = diceLog.rolls;
+            let diceLog = getCurrentOp(roller).resolve
+                .slice(-1)[0].rolls = diceLog.rolls;
             delete diceLog.rolls;
 
             return resolved;
