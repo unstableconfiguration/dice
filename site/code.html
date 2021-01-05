@@ -37,13 +37,19 @@
             as well as an apply() function that adds them to the oprations of a parent roller. 
         </p>
         <pre class='language-javascript'><code id='mathCode'></code></pre>
+
+        <p><h3>logging module and using hooks</h3></p>
+        <p>There are event hooks that fire before and after most events and allow for extenion. The logging 
+            module takes advantage of these hooks to log the input and output of each operation.
+        </p>
+        <pre class='language-javascript'><code id='loggingCode'></code></pre>
     </div>
     <div id='filler' style='height:200px;'></div>
 
 </body>
 
 <script>
-    (()=>{
+    (() => {
         let fetchCode = function(filePath, onLoaded) {
             fetch(filePath).then(response => {
                 response.text().then(text => onLoaded(text));
@@ -62,6 +68,11 @@
 
         fetchCode('../modules/math-module.js', (text) => { 
             document.getElementById('mathCode').innerHTML = 
+                Prism.highlight(text, Prism.languages.javascript, 'javascript');
+        });
+
+        fetchCode('../modules/logging-module.js', (text) => {
+            document.getElementById('loggingCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
