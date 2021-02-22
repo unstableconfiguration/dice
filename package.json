@@ -1,5 +1,5 @@
 {
-  "name": "Dice",
+  "name": "dice",
   "version": "1.0.0",
   "description": "Modular equation-based dice roller.",
   "main" : "dice.js",

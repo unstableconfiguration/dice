@@ -56,22 +56,22 @@
             })
         }
 
-        fetchCode('../dice.js', (text) => {
+        fetchCode('../src/dice.js', (text) => {
             document.getElementById('diceCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../dice-operation.js', (text) => { 
+        fetchCode('../src/dice-operation.js', (text) => { 
             document.getElementById('operationCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../modules/math-module.js', (text) => { 
+        fetchCode('../src/modules/math-module.js', (text) => { 
             document.getElementById('mathCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../modules/logging-module.js', (text) => {
+        fetchCode('../src/modules/logging-module.js', (text) => {
             document.getElementById('loggingCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
