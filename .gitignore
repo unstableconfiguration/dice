@@ -1,1 +1,4 @@
 deploy/dice.js
+
+dist/
+node_modules/

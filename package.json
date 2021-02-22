@@ -1,0 +1,29 @@
+{
+  "name": "Dice",
+  "version": "1.0.0",
+  "description": "Modular equation-based dice roller.",
+  "main" : "dice.js",
+  "private" : true,
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "webpack": "^5.21.2",
+    "webpack-cli": "^4.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unstableconfiguration/Dice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/unstableconfiguration/Dice/issues"
+  },
+  "homepage": "https://github.com/unstableconfiguration/Dice#readme"
+}
