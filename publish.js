@@ -1,6 +1,5 @@
-
-
 const fs = require('fs');
+const ghpages = require('gh-pages');
 
 // Copy build files to gh-pages branch folder
 fs.copyFile('dist/dice.js', 'gh-pages/scripts/dice.js', (err) => {
@@ -13,9 +12,5 @@ fs.copyFile('dist/tests.js', 'gh-pages/scripts/tests.js', (err) => {
     console.log('dist/tests.js copied to gh-pages/scripts/tests.js');
 });
 
-// Need to copy dist/dice.js and dist/tests.js 
-// to gh-pages/scripts/
-
-
-//var ghpages = require('gh-pages');
-//ghpages.publish('dist', function(err) {});
+// Publish /gh-pages/* to gh-pages branch and push to remote
+ghpages.publish('gh-pages', function(err) {});
