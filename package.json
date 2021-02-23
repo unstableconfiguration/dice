@@ -9,10 +9,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "rollup": "^2.39.1"
+    "rollup": "^2.39.1",
+    "rollup-plugin-delete": "^2.0.0"
   },
   "scripts": {
-    "serve" : "rollup --config rollup.dev.config.js"
+    "serve": "rollup --config rollup.dev.config.js",
+    "build": "rollup --config rollup.prod.config.js"
   },
   "repository": {
     "type": "git",
