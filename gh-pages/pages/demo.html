@@ -2,7 +2,7 @@
 <!doctype html>
 <head>
     <meta charset="UTF-8">
-    <link href='css/site.css' rel='stylesheet' />
+    <link href='../css/site.css' rel='stylesheet' />
 </head>
 <body>
     <div class='site-header'>
@@ -42,7 +42,7 @@
 </body>
 
 <script type='module'>
-    import { DiceRoller, MathModule, DnDModule, LoggingModule } from '../dist/dice.js'
+    import { DiceRoller, MathModule, DnDModule, LoggingModule } from '../scripts/dice.js'
     
     (() => {
         let dice = new DiceRoller({ modules : [MathModule, DnDModule]})

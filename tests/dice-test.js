@@ -1,4 +1,4 @@
-import { BaseModule } from '../modules/base-module.js';
+import { BaseModule } from '../src/modules/base-module.js';
 let assert = chai.assert;
 
 export let DiceTests = () => {

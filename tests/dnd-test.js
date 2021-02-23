@@ -1,5 +1,5 @@
-import { DiceRoller } from '../dice.js'
-import { DnDModule } from '../modules/dnd-module.js'
+import { DiceRoller } from '../src/dice.js'
+import { DnDModule } from '../src/modules/dnd-module.js'
 let assert = chai.assert;
 
 export let DnDTests = () => {

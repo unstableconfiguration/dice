@@ -2,10 +2,10 @@
 <!doctype html>
 <head>
     <meta charset="UTF-8">
-    <link href='css/site.css' rel='stylesheet' />
+    <link href='../css/site.css' rel='stylesheet' />
     <!-- prism.js syntax highlighting -->
-    <link href='css/vendor/prism.css' rel='stylesheet'/>
-    <script src='scripts/vendor/prism.js' data-manual></script>
+    <link href='../css/vendor/prism.css' rel='stylesheet'/>
+    <script src='../scripts/vendor/prism.js' data-manual></script>
 </head>
 <body>
     <div class='site-header'>
@@ -56,22 +56,24 @@
             })
         }
 
-        fetchCode('../src/dice.js', (text) => {
+        let raws = 'http://raw.githubusercontent.com/unstableconfiguration/Dice/master/';
+
+        fetchCode(raws + 'src/dice.js', (text) => {
             document.getElementById('diceCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../src/dice-operation.js', (text) => { 
+        fetchCode(raws + 'src/dice-operation.js', (text) => { 
             document.getElementById('operationCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../src/modules/math-module.js', (text) => { 
+        fetchCode(raws + 'src/modules/math-module.js', (text) => { 
             document.getElementById('mathCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });
 
-        fetchCode('../src/modules/logging-module.js', (text) => {
+        fetchCode(raws + 'src/modules/logging-module.js', (text) => {
             document.getElementById('loggingCode').innerHTML = 
                 Prism.highlight(text, Prism.languages.javascript, 'javascript');
         });

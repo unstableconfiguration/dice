@@ -1,4 +1,4 @@
-import { DiceRoller } from '../dice.js';
+import { DiceRoller } from '../src/dice.js';
 let assert = chai.assert;
 
 export let BaseTests = function() { 

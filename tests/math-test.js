@@ -1,5 +1,5 @@
-import { MathModule } from '../modules/math-module.js'
-import { DiceRoller } from '../dice.js';
+import { MathModule } from '../src/modules/math-module.js'
+import { DiceRoller } from '../src/dice.js';
 let assert = chai.assert
 
 export let MathTests = () => { 

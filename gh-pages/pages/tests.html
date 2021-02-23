@@ -2,11 +2,11 @@
 <!doctype html>
 <head>
     <meta charset="UTF-8">
-    <link href='css/site.css' rel='stylesheet' />
+    <link href='../css/site.css' rel='stylesheet' />
 
-    <link href='css/vendor/mocha.css' rel='stylesheet' />
-    <script src='scripts/vendor/mocha.js'></script>
-    <script src='scripts/vendor/chai.js'></script>
+    <link href='../css/vendor/mocha.css' rel='stylesheet' />
+    <script src='../scripts/vendor/mocha.js'></script>
+    <script src='../scripts/vendor/chai.js'></script>
 
 </head>
 <body>
@@ -25,12 +25,12 @@
 
 <script>mocha.setup('bdd')</script>
 <script type='module'>
-    import { BaseTests } from '../tests/base-test.js'
-    import { DiceTests } from '../tests/dice-test.js'
-    import { MathTests } from '../tests/math-test.js'
-    import { DnDTests } from '../tests/dnd-test.js'
-    import { IntegrationTests } from '../tests/integration-test.js'
-    import { LoggingTests } from '../tests/logging-test.js'
+    import { BaseTests } from '../../tests/base-test.js'
+    import { DiceTests } from '../../tests/dice-test.js'
+    import { MathTests } from '../../tests/math-test.js'
+    import { DnDTests } from '../../tests/dnd-test.js'
+    import { IntegrationTests } from '../../tests/integration-test.js'
+    import { LoggingTests } from '../../tests/logging-test.js'
 
     BaseTests();
     DiceTests();

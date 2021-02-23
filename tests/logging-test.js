@@ -1,5 +1,5 @@
-import { LoggingModule } from '../modules/logging-module.js'
-import { DiceRoller } from '../dice.js'
+import { LoggingModule } from '../src/modules/logging-module.js'
+import { DiceRoller } from '../src/dice.js'
 
 export let LoggingTests = () => {
     let assert = chai.assert;
