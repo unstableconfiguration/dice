@@ -15,8 +15,9 @@
     "rollup-plugin-delete": "^2.0.0"
   },
   "scripts": {
-    "serve": "rollup --config rollup.dev.config.js",
-    "build": "rollup --config rollup.prod.config.js"
+    "dev-build": "rollup --config rollup.dev.config.js",
+    "prod-build": "rollup --config rollup.prod.config.js",
+    "publish": "node publish.js"
   },
   "repository": {
     "type": "git",
