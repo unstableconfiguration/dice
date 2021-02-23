@@ -42,10 +42,7 @@
 </body>
 
 <script type='module'>
-    import { DiceRoller } from '../src/dice.js'
-    import { MathModule } from '../src/modules/math-module.js'
-    import { DnDModule } from '../src/modules/dnd-module.js'
-    import { LoggingModule } from '../src/modules/logging-module.js'
+    import { DiceRoller, MathModule, DnDModule, LoggingModule } from '../dist/dice.js'
     
     (() => {
         let dice = new DiceRoller({ modules : [MathModule, DnDModule]})

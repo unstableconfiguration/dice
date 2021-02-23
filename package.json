@@ -2,16 +2,15 @@
   "name": "dice",
   "version": "1.0.0",
   "description": "Modular equation-based dice roller.",
-  "main" : "dice.js",
-  "private" : true,
+  "main": "index.js",
+  "private": true,
   "directories": {
     "test": "tests"
   },
-  "dependencies": {
-    "webpack": "^5.21.2",
-    "webpack-cli": "^4.5.0"
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^2.39.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

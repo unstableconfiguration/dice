@@ -1,4 +1,4 @@
-import { BaseModule } from './modules/base-module.js.js'
+import { BaseModule } from './modules/base-module.js'
 
 /* 
     options = {
