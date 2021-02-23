@@ -1,4 +1,5 @@
-import del from 'rollup-plugin-delete'
+import del from 'rollup-plugin-delete';
+import { babel } from '@rollup/plugin-babel';
 
 export default [{
     input: 'src/index.js',
@@ -7,6 +8,7 @@ export default [{
         format: 'es'
     },
     plugins : [
-        del({ targets: 'dist/*' })
+        del({ targets: 'dist/*' }),
+        babel({ babelHelpers: 'bundled' })
     ]
 }];
