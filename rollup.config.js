@@ -1,5 +1,6 @@
 import del from 'rollup-plugin-delete';
-import { babel } from '@rollup/plugin-babel';
+import babel from '@rollup/plugin-babel';
+import copy from 'rollup-plugin-copy'
 
 export default [{
         input: 'src/index.js',
@@ -9,13 +10,18 @@ export default [{
         },
         plugins : [
             del({ targets: 'dist/*' }),
-            babel({ babelHelpers: 'bundled' })
+            babel({ babelHelpers: 'bundled' }),
+            copy({
+                targets : [
+                    { src : 'dist/dice.js', dest: 'gh-pages/scripts' }
+                ]
+            })
         ]
     },
     {
         input: 'tests/tests.js',
         output : {
-            file : 'dist/tests.js',        
+            file : 'gh-pages/tests/dice-tests.js',        
             format : 'es'
         },
         plugins : [
