@@ -1,5 +1,4 @@
 
-
 .site-header {
     background-color: #eee;
     border-bottom: solid thin #ccc;
@@ -44,7 +43,6 @@
 .top-nav a:hover { 
     background-color:#555;
     text-decoration: underline;
-
 }
 
 .site-content { 
@@ -57,7 +55,6 @@
 .site-content a:hover, a:active { 
     font-style:italic
 }
-
 
 .site-content code {
     display:block;
@@ -72,4 +69,56 @@
 .text-small {
     font-size:small;
 }
+
+/* Docs */
+#docs { 
+    display:inline-block;
+    flex-wrap: wrap;
+    margin : 10px 0 0 10px;
+    width:80%;
+}
+
+#docs code {
+    /* overrides from how code is handled on code.html */
+    height: auto;
+    resize: none;
+    overflow-y:auto;
+}
+
+#docs-right-nav {
+    display:inline;
+    float:right;
+    vertical-align:top; 
+    border-left: solid thin black;
+    padding: 5px 10px;
+    margin: 0px 10px 0px 0px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    position:fixed;
+}
+
+#docs-right-nav > span {
+    font-weight:bold;
+}
+
+#docs-right-nav a {
+    display:block;
+    text-decoration: none;
+    margin-left:1em;
+}
+
+#docs-right-nav a::before {
+    content : '- '
+}
+
+
+#docs-right-nav a:link, 
+#docs-right-nav a:visited {
+    color:#333;
+}
+
+#docs-right-nav a:hover { 
+    text-decoration: underline;
+}
+
 

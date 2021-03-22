@@ -1,53 +1,41 @@
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-var _optionDefaults;
-
-Promise.resolve().then(function () { return dice; }).then(function (t) {
-  return console.log(t);
-});
-
-var i = function i(x) {
-  return x;
-};
-
-console.log(i('eh'));
-var optionDefaults = (_optionDefaults = {
+var optionDefaults = {
   /* Human readable name for the operation. */
   name: 'Unnamed',
 
   /* A regularexpression that finds a meaningful target string for this operation.
       Example: /\d*d\d+/ - finds strings like 'd6' or '1d6' for the dice roller
   */
-  search: /RegExp/g
-}, _defineProperty(_optionDefaults, "search", function search(equation) {
-  throw 'No search function provided for operation ' + name;
-}), _defineProperty(_optionDefaults, "parse", function parse(expression) {
-  // -?  optional minus sign for negative numbers 
-  // (\d*\.)? optional 0 or more numbers followed by a . for decimals
-  // \d+  required at least one number of one or more digits
-  var number = /-?(\d*\.)?\d+/g;
-  var get = null,
-      operands = [];
+  search: /RegExp/g,
 
-  while (get = number.exec(expression)) {
-    operands.push(get[0]);
-  }
+  /* Alternatively, search can be a function that returns the expression */
+  search: function search(equation) {
+    throw 'No search function provided for operation ' + name;
+  },
 
-  return operands;
-}), _defineProperty(_optionDefaults, "resolve", function resolve(operands) {}), _optionDefaults);
+  /* Accepts the results of the search and splits them up into an operand array.
+      Example: would accept '1+2' and return an [1, 2] for an addition operation.    
+      Default: Returns all numbers of one or more digits including negatives and decimals
+  */
+  parse: function parse(expression) {
+    // -?  optional minus sign for negative numbers 
+    // (\d*\.)? optional 0 or more numbers followed by a . for decimals
+    // \d+  required at least one number of one or more digits
+    var number = /-?(\d*\.)?\d+/g;
+    var get = null,
+        operands = [];
+
+    while (get = number.exec(expression)) {
+      operands.push(get[0]);
+    }
+
+    return operands;
+  },
+
+  /* Accepts the operands from parse and returns a single string value
+      Example: if the operands are [1, 2] and it is an addition operation, this would return "3"
+  */
+  resolve: function resolve(operands) {}
+};
 var DiceOperation = function DiceOperation() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var op = this;
@@ -165,7 +153,7 @@ var DiceRoller = function DiceRoller(options) {
   roller.solve = function (equation) {
     var input = equation;
     roller.onSolve(equation);
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       equation = op.evaluate(equation);
     });
     roller.onSolved(input, equation);
@@ -177,7 +165,7 @@ var DiceRoller = function DiceRoller(options) {
       modules = [modules];
     }
 
-    modules.forEach(function (module) {
+    modules.forEach(module => {
       new module().apply(roller);
     });
   }; // Seed with dice roll operation
@@ -189,11 +177,6 @@ var DiceRoller = function DiceRoller(options) {
     roller.applyModules(options.modules);
   }
 };
-
-var dice = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  DiceRoller: DiceRoller
-});
 
 var assert = chai.assert;
 var BaseTests = function BaseTests() {
@@ -244,7 +227,7 @@ var BaseTests = function BaseTests() {
 };
 
 var assert$1 = chai.assert;
-var DiceTests = function DiceTests() {
+var DiceTests = () => {
   describe('Dice Roller Tests', function () {
     describe('Search Tests', function () {
       var diceOperation = new BaseModule().operations[0];
@@ -281,7 +264,7 @@ var DiceTests = function DiceTests() {
         output: '2d6',
         note: "should match 2d6 from 2d6+4d8, only returns first match"
       }];
-      searchTests.forEach(function (test) {
+      searchTests.forEach(test => {
         it(test.note, function () {
           assert$1.isTrue(test.output == diceOperation.search(test.input));
         });
@@ -302,7 +285,7 @@ var DiceTests = function DiceTests() {
         output: ['200', '10'],
         note: 'should split 200d10 into [200, 10]'
       }];
-      parseTests.forEach(function (test) {
+      parseTests.forEach(test => {
         it(test.note, function () {
           assert$1.isTrue(JSON.stringify(test.output) == JSON.stringify(diceOperation.parse(test.input)));
         });
@@ -369,23 +352,17 @@ var DnDModule = function DnDModule() {
     resolve: function resolve(repetitions, facets) {
       var operation = this; // 2xd20 becomes [d20, d20]. We then let the roller solve each d20 
 
-      var results = Array(+repetitions).fill('d' + facets).map(function (x) {
-        return +operation.parent.solve(x);
-      }); // high-to-low sorting
+      var results = Array(+repetitions).fill('d' + facets).map(x => +operation.parent.solve(x)); // high-to-low sorting
 
-      results.sort(function (x, y) {
-        return +x < +y;
-      });
+      results.sort((x, y) => +x < +y);
       return JSON.stringify(results);
     },
-    parse: function parse(match) {
-      return match.split(/\D+/);
-    }
+    parse: match => match.split(/\D+/)
   })];
 };
 
 var assert$2 = chai.assert;
-var DnDTests = function DnDTests() {
+var DnDTests = () => {
   describe('5e dice extensions', function () {
     var roller = new DiceRoller({
       modules: [DnDModule]
@@ -410,7 +387,7 @@ var DnDTests = function DnDTests() {
           output: '4xd6',
           note: "matches first found"
         }];
-        searchTests.forEach(function (test) {
+        searchTests.forEach(test => {
           it(test.note, function () {
             assert$2.isTrue(test.output == advantage.search(test.input));
           });
@@ -426,7 +403,7 @@ var DnDTests = function DnDTests() {
           output: ['8', '6'],
           note: "parses 8xd6 into [8, 6]"
         }];
-        parseTests.forEach(function (test) {
+        parseTests.forEach(test => {
           it(test.note, function () {
             assert$2.isTrue(JSON.stringify(test.output) == JSON.stringify(advantage.parse(test.input)));
           });
@@ -440,9 +417,7 @@ var DnDTests = function DnDTests() {
         it('should sort the result array in descending order', function () {
           var solution = JSON.parse(roller.solve('20xd20'));
           var copy = solution.slice();
-          copy.sort(function (x, y) {
-            return x < y;
-          });
+          copy.sort((x, y) => x < y);
           assert$2(JSON.stringify(solution) == JSON.stringify(copy));
         });
       });
@@ -467,7 +442,7 @@ var DnDTests = function DnDTests() {
 
 var MathModule = function MathModule() {
   this.apply = function (roller) {
-    this.operations.forEach(function (op) {
+    this.operations.forEach(op => {
       // Parentheses needs a reference to the roller for recursion 
       op.parent = roller;
       roller.operations.push(op);
@@ -477,18 +452,14 @@ var MathModule = function MathModule() {
   this.operations = [new DiceOperation({
     name: 'Parentheses',
     search: /\([^()]+\)/,
-    parse: function parse(match) {
-      return [match.replace(/[()]/g, '')];
-    },
+    parse: match => [match.replace(/[()]/g, '')],
     resolve: function resolve(x) {
       return this.parent.solve(x);
     }
   }), new DiceOperation({
     name: 'Exponents',
     search: /-?(\d*\.)?\d+\^-?(\d*\.)?\d+/,
-    resolve: function resolve(x, y) {
-      return Math.pow(x, y);
-    }
+    resolve: (x, y) => Math.pow(x, y)
   })
   /* Needs to happen simultaneously, so a single function */
   , new DiceOperation({
@@ -500,15 +471,11 @@ var MathModule = function MathModule() {
       var operator = /[\*\/]/.exec(expression)[0];
       return [firstOperand, secondOperand, operator];
     },
-    resolve: function resolve(x, y, op) {
-      return op == '*' ? x * y : x / y;
-    }
+    resolve: (x, y, op) => op == '*' ? x * y : x / y
   }), new DiceOperation({
     name: 'Add',
     search: /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/,
-    resolve: function resolve(x, y) {
-      return +x + +y;
-    }
+    resolve: (x, y) => +x + +y
   }), new DiceOperation({
     name: 'Subtract',
     search: /-?(\d*\.)?\d+[\-]-?(\d*\.)?\d+/,
@@ -522,26 +489,20 @@ var MathModule = function MathModule() {
 
       return [firstOperand, secondOperand];
     },
-    resolve: function resolve(x, y) {
-      return +x - +y;
-    }
+    resolve: (x, y) => +x - +y
   })];
 };
 
 var assert$3 = chai.assert;
-var IntegrationTests = function IntegrationTests() {
+var IntegrationTests = () => {
   describe('Integration Tests', function () {
     describe('Dice and Math', function () {
       var roller = new DiceRoller({
         modules: [MathModule]
       });
-      var dice = roller.operations.find(function (op) {
-        return op.name == 'dice';
-      }); // Simplify our tests by removing randomization; that gets tested in the dice unit tests.
+      var dice = roller.operations.find(op => op.name == 'dice'); // Simplify our tests by removing randomization; that gets tested in the dice unit tests.
 
-      dice.roll = function (facets) {
-        return +facets;
-      };
+      dice.roll = facets => +facets;
 
       var tests = [{
         input: '',
@@ -576,7 +537,7 @@ var IntegrationTests = function IntegrationTests() {
         output: '16',
         note: "successfully applies exponents to parentheses"
       }];
-      tests.forEach(function (test) {
+      tests.forEach(test => {
         it(test.note, function () {
           assert$3(test.output == roller.solve(test.input));
         });
@@ -586,13 +547,9 @@ var IntegrationTests = function IntegrationTests() {
       var roller = new DiceRoller({
         modules: [MathModule, DnDModule]
       });
-      var dice = roller.operations.find(function (op) {
-        return op.name == 'dice';
-      });
+      var dice = roller.operations.find(op => op.name == 'dice');
 
-      dice.roll = function (facets) {
-        return +facets;
-      };
+      dice.roll = facets => +facets;
 
       it('Should evaluate DnD advantage, die, and addition', function () {
         assert$3(roller.solve('2xd20+1d6+5') == '[20,20]+11');
@@ -661,7 +618,7 @@ var LoggingModule = function LoggingModule() {
   };
 
   this.onEvaluate = function (roller) {
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       var onEvaluate = op.onEvaluate;
 
       op.onEvaluate = function (equation) {
@@ -677,7 +634,7 @@ var LoggingModule = function LoggingModule() {
   };
 
   this.onEvaluated = function (roller) {
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       var onEvaluated = op.onEvaluated;
 
       op.onEvaluated = function (input, equation) {
@@ -691,7 +648,7 @@ var LoggingModule = function LoggingModule() {
   };
 
   this.onSearched = function (roller) {
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       var onSearched = op.onSearched;
 
       op.onSearched = function (equation, expression) {
@@ -705,7 +662,7 @@ var LoggingModule = function LoggingModule() {
   };
 
   this.onParsed = function (roller) {
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       var onParsed = op.onParsed;
 
       op.onParsed = function (expression, operands) {
@@ -719,7 +676,7 @@ var LoggingModule = function LoggingModule() {
   };
 
   this.onResolved = function (roller) {
-    roller.operations.forEach(function (op) {
+    roller.operations.forEach(op => {
       var onResolved = op.onResolved;
 
       op.onResolved = function (operands, result) {
@@ -735,9 +692,7 @@ var LoggingModule = function LoggingModule() {
 
 
   this.onDiceResolve = function (roller) {
-    var diceOp = roller.operations.find(function (op) {
-      return op.name === 'dice';
-    });
+    var diceOp = roller.operations.find(op => op.name === 'dice');
     var onResolve = diceOp.onResolve;
 
     diceOp.onResolve = function (operands) {
@@ -749,9 +704,7 @@ var LoggingModule = function LoggingModule() {
 
 
   this.onDiceRoll = function (roller) {
-    var diceOp = roller.operations.find(function (op) {
-      return op.name === 'dice';
-    });
+    var diceOp = roller.operations.find(op => op.name === 'dice');
     var roll = diceOp.roll;
 
     diceOp.roll = function (facets) {
@@ -764,9 +717,7 @@ var LoggingModule = function LoggingModule() {
 
 
   this.onDiceResolved = function (roller) {
-    var diceOp = roller.operations.find(function (op) {
-      return op.name === 'dice';
-    });
+    var diceOp = roller.operations.find(op => op.name === 'dice');
     var onResolved = diceOp.onResolved;
 
     diceOp.onResolved = function (operands, result) {
@@ -779,7 +730,7 @@ var LoggingModule = function LoggingModule() {
   };
 };
 
-var LoggingTests = function LoggingTests() {
+var LoggingTests = () => {
   var assert = chai.assert;
   describe('Logging Tests', function () {
     describe('initialization', function () {
@@ -860,12 +811,10 @@ var LoggingTests = function LoggingTests() {
 };
 
 var assert$4 = chai.assert;
-var MathTests = function MathTests() {
+var MathTests = () => {
   describe('Math Module Unit Tests', function () {
     describe('Addition', function () {
-      var addOperation = new MathModule().operations.find(function (mod) {
-        return mod.name == 'Add';
-      });
+      var addOperation = new MathModule().operations.find(mod => mod.name == 'Add');
       describe('Search Tests', function () {
         var addSearchTests = [{
           input: '1+2',
@@ -884,7 +833,7 @@ var MathTests = function MathTests() {
           output: null,
           note: 'should not match 1-2'
         }];
-        addSearchTests.forEach(function (test) {
+        addSearchTests.forEach(test => {
           it(test.note, function () {
             assert$4(addOperation.search(test.input) == test.output);
           });
@@ -904,7 +853,7 @@ var MathTests = function MathTests() {
           output: ['55', '66'],
           note: 'should parse 55+66 to [55, 66]'
         }];
-        addParseTests.forEach(function (test) {
+        addParseTests.forEach(test => {
           it(test.note, function () {
             assert$4(JSON.stringify(addOperation.parse(test.input)) == JSON.stringify(test.output));
           });
@@ -920,9 +869,7 @@ var MathTests = function MathTests() {
       });
     });
     describe('Subtraction', function () {
-      var subtractOperation = new MathModule().operations.find(function (mod) {
-        return mod.name == 'Subtract';
-      });
+      var subtractOperation = new MathModule().operations.find(mod => mod.name == 'Subtract');
       describe('Search Tests', function () {
         var addSearchTests = [{
           input: '1-2',
@@ -941,7 +888,7 @@ var MathTests = function MathTests() {
           output: null,
           note: 'should not match 1+2'
         }];
-        addSearchTests.forEach(function (test) {
+        addSearchTests.forEach(test => {
           it(test.note, function () {
             assert$4(subtractOperation.search(test.input) == test.output);
           });
@@ -961,7 +908,7 @@ var MathTests = function MathTests() {
           output: ['55', '-66'],
           note: 'should parse 55-66 to [55, 66]'
         }];
-        addParseTests.forEach(function (test) {
+        addParseTests.forEach(test => {
           it(test.note, function () {
             assert$4(JSON.stringify(subtractOperation.parse(test.input)) == JSON.stringify(test.output));
           });
@@ -977,9 +924,7 @@ var MathTests = function MathTests() {
       });
     });
     describe('Multiplication and Division Tests', function () {
-      var multDivOperation = new MathModule().operations.find(function (op) {
-        return op.name == 'MultiplyAndDivide';
-      });
+      var multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyAndDivide');
       describe('Search Tests', function () {
         var searchTests = [{
           input: '1*2',
@@ -1014,7 +959,7 @@ var MathTests = function MathTests() {
           output: '33/44',
           note: 'matches 33/44 in abc33/44xyz'
         }];
-        searchTests.forEach(function (test) {
+        searchTests.forEach(test => {
           it(test.note, function () {
             assert$4(multDivOperation.search(test.input) == test.output);
           });
@@ -1038,7 +983,7 @@ var MathTests = function MathTests() {
           output: ['-10', '-100', '/'],
           note: 'extracts [-10, -100] from -10/-100'
         }];
-        parseTests.forEach(function (test) {
+        parseTests.forEach(test => {
           it(test.note, function () {
             assert$4(JSON.stringify(multDivOperation.parse(test.input)) == JSON.stringify(test.output));
           });
@@ -1060,9 +1005,7 @@ var MathTests = function MathTests() {
       });
     });
     describe('Exponents Tests', function () {
-      var exponentOperation = new MathModule().operations.find(function (op) {
-        return op.name == 'Exponents';
-      });
+      var exponentOperation = new MathModule().operations.find(op => op.name == 'Exponents');
       describe('Search Tests', function () {
         var searchTests = [{
           input: '2^2',
@@ -1081,7 +1024,7 @@ var MathTests = function MathTests() {
           output: '22^22',
           note: 'matches 22^22 in abc22^22xyz'
         }];
-        searchTests.forEach(function (test) {
+        searchTests.forEach(test => {
           it(test.note, function () {
             assert$4(exponentOperation.search(test.input) == test.output);
           });
@@ -1097,7 +1040,7 @@ var MathTests = function MathTests() {
           output: ['-10', '-2'],
           note: 'parses [-10, -2] from -10^-2'
         }];
-        parseTests.forEach(function (test) {
+        parseTests.forEach(test => {
           it(test.note, function () {
             assert$4(JSON.stringify(exponentOperation.parse(test.input)) == JSON.stringify(test.output));
           });
@@ -1113,9 +1056,7 @@ var MathTests = function MathTests() {
       });
     });
     describe('Parentheses Tests', function () {
-      var parenthesesOperation = new MathModule().operations.find(function (op) {
-        return op.name == 'Parentheses';
-      });
+      var parenthesesOperation = new MathModule().operations.find(op => op.name == 'Parentheses');
       describe('Search Tests', function () {
         var searchTests = [{
           input: '(1+2)',
@@ -1134,7 +1075,7 @@ var MathTests = function MathTests() {
           output: '(xyz)',
           note: 'should match (xyz) in abc(xyz)123'
         }];
-        searchTests.forEach(function (test) {
+        searchTests.forEach(test => {
           it(test.note, function () {
             assert$4(parenthesesOperation.search(test.input) == test.output);
           });
@@ -1146,7 +1087,7 @@ var MathTests = function MathTests() {
           output: ['1+2'],
           note: 'should extract inner equation'
         }];
-        parseTests.forEach(function (test) {
+        parseTests.forEach(test => {
           it(test.note, function () {
             assert$4(JSON.stringify(parenthesesOperation.parse(test.input)) == JSON.stringify(test.output));
           });

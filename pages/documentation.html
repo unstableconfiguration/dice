@@ -1,0 +1,56 @@
+
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <link href='../css/site.css' rel='stylesheet' />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class='site-header'>
+        <a href=../index.html>dice.js</a>
+        <div class='top-nav'>
+            <a href='demo.html'>demo</a>
+            <a href='code.html'>code</a>
+            <a href='tests.html'>tests</a>
+            <a href='documentation.html'>docs</a>
+        </div>
+    </div>
+    <div id='site-content' class='site-content'>
+        <div id='docs'></div>
+        <div id='docs-right-nav'></div>
+    </div>
+</body>
+
+<script type='module'>
+    let docs = document.getElementById('docs');
+    let rightNav = document.getElementById('docs-right-nav');
+
+    const addLeftNavItems = function() { 
+        let headers = docs.querySelectorAll('h1, h2'); 
+        Array.from(headers).forEach(h => {
+            if(h.tagName === 'H1') { 
+                let span = document.createElement('span');
+                span.innerHTML = h.innerHTML;
+                rightNav.appendChild(span);
+            }
+            if(h.tagName === 'H2') {
+                h.id = h.innerHTML;
+                let a = document.createElement('a');
+                
+                a.href = '#' + h.innerHTML;
+                a.innerHTML = h.innerHTML;
+                
+                rightNav.appendChild(a);
+            }
+        });
+    }
+
+    fetch('./documentation.md').then(response => { 
+        response.text().then(t => {
+            docs.innerHTML = docs.innerHTML + marked(t);
+            addLeftNavItems();
+        });
+    });
+
+</script>
+
