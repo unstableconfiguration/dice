@@ -1,0 +1,58 @@
+
+/* Siple grayscale palette */
+:root {
+    --darkest : #000;
+    --dark : #333;
+    --medium : #555;
+    --light : #ccc;
+    --lightest : #eee;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.site-header {
+    background-color: var(--lightest);
+    border-bottom: solid thin var(--light);
+    border-top: solid thin var(--light);
+    display:block;
+    padding: 1% 5% 1% 5%;
+}
+
+/* Main header text */
+.site-header > a {
+    color: var(--dark);
+    font-size:2em;
+    font-weight:bold;
+    text-decoration:none;
+}
+.site-header > a:visited { color: var(--dark); }
+.site-header > a:hover { font-style:italic }
+
+/* site navigation links */
+.top-nav { 
+    background-color:var(--dark);
+    overflow:hidden;
+    padding-left:1em;
+}
+
+.top-nav a { 
+    display:inline-block;
+    color:var(--lightest);
+    font-size:1.25em;
+    padding:.35em;
+    text-decoration: none;
+    text-align: center;
+}
+.top-nav a:visited { color:var(--light); }
+.top-nav a:hover { background-color:var(--medium); }
+
+/* */
+.content { 
+    display:block;
+    color:var(--medium);
+    padding:3% 5% 3% 5%;
+}
+.content a:hover { font-style:italic }
+
