@@ -1,6 +1,25 @@
 # Dice Rolling
 Random number generation simulating dice rolls.
 
+## initialization
+The relevant modules are specified when initializing the dice roller. With no modules specified, it will only handle the 'd' operator. 
+
+```javascript
+    import { DiceRoller, MathModule, DnDModule, LoggingModule } from '../scripts/dice.js'
+    // Can handle PEMDAS and 'xd' operations
+    let dice = new DiceRoller({ modules : [MathModule, DnDModule]});
+```
+
+## .solve(equation)
+Once initialized, the .solve() function can be called. It expects a string input equation, and will output a string result. 
+
+```javascript
+    import { DiceRoller, MathModule } from '../scripts/dice.js'
+   
+    let dice = new DiceRoller({ modules : [MathModule]});
+    let result = dice.solve('4+5'); // expect: 9
+```
+
 ## d operator
 Dice roll operator. The **facets** of the die are specified by an integer to the right of the 'd' operator.
 ```
@@ -57,3 +76,6 @@ nxdy rolls a y-sided die n times, but keeps the rolls separated in an array sort
     2xd20 //Example output: [18, 11] 
     4xd4 // Example output: [4, 3, 3, 1]
 ```
+
+
+# Logging Module

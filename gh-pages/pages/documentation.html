@@ -5,6 +5,9 @@
     <link href='../css/site.css' rel='stylesheet' />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href='../css/docs.css' rel='stylesheet' />
+
+    <script src='../scripts/vendor/prism.js'></script>
+    <link href='../css/vendor/prism.css' rel='stylesheet'/>
 </head>
 <body>
     <div class='site-header'>
@@ -50,10 +53,18 @@
         });
     }
 
+    const colorizeCodeBlocks = function() { 
+        let codes = document.querySelectorAll('.language-javascript');
+        Array.from(codes).forEach(code => { 
+            Prism.highlightElement(code);
+        });
+    }
+
     fetch('./documentation.md').then(response => { 
         response.text().then(t => {
             docs.innerHTML = docs.innerHTML + marked(t);
             addLeftNavItems();
+            colorizeCodeBlocks();
         });
     });
 
