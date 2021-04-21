@@ -4,88 +4,57 @@ let assert = chai.assert
 
 export let MathTests = () => { 
     describe('Math Module Unit Tests', function() {
+        
+        describe('Addition and Subtraction Tests', function() { 
+            let addSubtract = new MathModule().operations.find(op => op.name == 'AddSubtract');
 
-        describe('Addition', function() { 
-            let addOperation = new MathModule().operations.find(mod => mod.name == 'Add');
             describe('Search Tests', function() { 
-                let addSearchTests = [
+                let searchTests = [
                     { input : '1+2', output : '1+2', note : `should match 1+2` },
                     { input : '1+', output : null, note : `should not match '1+'` },
                     { input : '+2', output : null, note : `should not match +2` },
-                    { input : '1-2', output : null, note : 'should not match 1-2' }
-                ]
-                addSearchTests.forEach(test => { 
+                    { input : '1-2', output : '1-2', note : `should match 1-2` },
+                    { input : '1-', output : null, note : `should not match '1-'` },
+                    { input : '-2', output : null, note : `should not match -2` }
+                ];
+                searchTests.forEach(test => {
                     it(test.note, function() {
-                        assert(addOperation.search(test.input) == test.output);
+                        assert(addSubtract.search(test.input) == test.output);
                     });
-                });
+                })
             });
 
-            describe('Parse Tests', function() {
-                let addParseTests = [
-                    { input : '1+2', output : ['1', '2'], note : 'should parse 1+2 to [1, 2]' },
-                    { input : '-3+4', output : ['-3', '4'], note : 'should parse -3+4 to [-3, 4]'},
-                    { input : '55+66', output : ['55', '66'], note : 'should parse 55+66 to [55, 66]'}
+            describe('Parse Tests', function() { 
+                let parseTests = [
+                    { input : '1+2', output : ['1', '2', '+'], note : 'should parse 1+2 to [1, 2, +]' },
+                    { input : '-3+4', output : ['-3', '4', '+'], note : 'should parse -3+4 to [-3, 4, +]'},
+                    { input : '55+66', output : ['55', '66', '+'], note : 'should parse 55+66 to [55, 66, +]'},
+                    { input : '1-2', output : ['1', '2', '-'], note : 'should parse 1-2 to [1, 2, -]' },
+                    { input : '-3-4', output : ['-3', '4', '-'], note : 'should parse -3-4 to [-3, 4, -]'},
+                    { input : '55--66', output : ['55', '-66', '-'], note : 'should parse 55-66 to [55, -66, -]'}
                 ];
-                addParseTests.forEach(test => {
-                    it(test.note, function() {
-                        assert(JSON.stringify(addOperation.parse(test.input)) == JSON.stringify(test.output));
-                    });
+                parseTests.forEach(test => {
+                    it(test.note, function() { 
+                        assert(JSON.stringify(addSubtract.parse(test.input)) == JSON.stringify(test.output));
+                    })
                 });
             });
 
             describe('Evaluation Tests', function() { 
                 it('should evaluate 1+2 to 3', function() { 
-                    assert(addOperation.evaluate('1+2') === '3');
+                    assert(addSubtract.evaluate('1+2') === '3');
                 });
-                it('should evaluate -1+3-2 to 2-2 (addition operation only)', function() { 
-                    assert(addOperation.evaluate('-1+3-2') == '2-2');
-                });
-            });
-        });
-
-        
-        describe('Subtraction', function() { 
-            let subtractOperation = new MathModule().operations.find(mod => mod.name == 'Subtract');
-            describe('Search Tests', function() { 
-                let addSearchTests = [
-                    { input : '1-2', output : '1-2', note : `should match 1-2` },
-                    { input : '1-', output : null, note : `should not match '1-'` },
-                    { input : '-2', output : null, note : `should not match -2` },
-                    { input : '1+2', output : null, note : 'should not match 1+2' }
-                ]
-                addSearchTests.forEach(test => { 
-                    it(test.note, function() {
-                        assert(subtractOperation.search(test.input) == test.output);
-                    });
-                });
-            });
-
-            describe('Parse Tests', function() {
-                let addParseTests = [
-                    { input : '1-2', output : ['1', '2'], note : 'should parse 1-2 to [1, 2]' },
-                    { input : '-3-4', output : ['-3', '4'], note : 'should parse -3-4 to [-3, 4]'},
-                    { input : '55--66', output : ['55', '-66'], note : 'should parse 55-66 to [55, 66]'}
-                ];
-                addParseTests.forEach(test => {
-                    it(test.note, function() {
-                        assert(JSON.stringify(subtractOperation.parse(test.input)) == JSON.stringify(test.output));
-                    });
-                });
-            });
-
-            describe('Evaluation Tests', function() { 
                 it('should evaluate 1-2 to -1', function() { 
-                    assert(subtractOperation.evaluate('1-2') === '-1');
+                    assert(addSubtract.evaluate('1-2') === '-1');
                 });
-                it('should evaluate -1+3-2 to -1+1 (addition operation only)', function() { 
-                    assert(subtractOperation.evaluate('-1+3-2') == '-1+1');
+                it('should evaluate 2-1+1 to 2', function() { 
+                    assert(addSubtract.evaluate('2-1+1') === '2');
                 });
             });
         });
 
         describe('Multiplication and Division Tests', function() { 
-            let multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyAndDivide');
+            let multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyDivide');
             describe('Search Tests', function() { 
                 let searchTests = [
                     { input : '1*2', output : '1*2', note : 'matches 1*2' },
