@@ -1,4 +1,4 @@
-let optionDefaults = {
+var optionDefaults = {
   /* Human readable name for the operation. */
   name: 'Unnamed',
 
@@ -8,7 +8,7 @@ let optionDefaults = {
   search: /RegExp/g,
 
   /* Alternatively, search can be a function that returns the expression */
-  search: function (equation) {
+  search: function search(equation) {
     throw 'No search function provided for operation ' + name;
   },
 
@@ -16,12 +16,12 @@ let optionDefaults = {
       Example: would accept '1+2' and return an [1, 2] for an addition operation.    
       Default: Returns all numbers of one or more digits including negatives and decimals
   */
-  parse: function (expression) {
+  parse: function parse(expression) {
     // -?  optional minus sign for negative numbers 
     // (\d*\.)? optional 0 or more numbers followed by a . for decimals
     // \d+  required at least one number of one or more digits
-    let number = /-?(\d*\.)?\d+/g;
-    let get = null,
+    var number = /-?(\d*\.)?\d+/g;
+    var get = null,
         operands = [];
 
     while (get = number.exec(expression)) {
@@ -34,20 +34,21 @@ let optionDefaults = {
   /* Accepts the operands from parse and returns a single string value
       Example: if the operands are [1, 2] and it is an addition operation, this would return "3"
   */
-  resolve: function (operands) {}
+  resolve: function resolve(operands) {}
 };
-let DiceOperation = function (options = {}) {
-  let op = this;
+var DiceOperation = function DiceOperation() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var op = this;
 
-  for (let k in options) {
+  for (var k in options) {
     op[k] = options[k];
   }
 
   op.name = options.name || optionDefaults.name;
-  let search = options.search;
+  var search = options.search;
 
   if (search instanceof RegExp) {
-    search = function (input) {
+    search = function search(input) {
       return (new RegExp(options.search).exec(input) || [null])[0];
     };
   }
@@ -58,12 +59,12 @@ let DiceOperation = function (options = {}) {
 
   op.search = function (equation) {
     op.onSearch(equation);
-    let expression = search(equation);
+    var expression = search(equation);
     op.onSearched(equation, expression);
     return expression;
   };
 
-  let parse = options.parse || optionDefaults.parse;
+  var parse = options.parse || optionDefaults.parse;
 
   op.onParse = function (expression) {};
 
@@ -71,12 +72,12 @@ let DiceOperation = function (options = {}) {
 
   op.parse = function (expression) {
     op.onParse(expression);
-    let operands = parse(expression);
+    var operands = parse(expression);
     op.onParsed(expression, operands);
     return operands;
   };
 
-  let resolve = options.resolve;
+  var resolve = options.resolve;
 
   op.onResolve = function (operands) {};
 
@@ -84,7 +85,7 @@ let DiceOperation = function (options = {}) {
 
   op.resolve = function (operands) {
     op.onResolve(operands);
-    let result = resolve.apply(op, operands);
+    var result = resolve.apply(op, operands);
     op.onResolved(operands, result);
     return result;
   };
@@ -95,12 +96,12 @@ let DiceOperation = function (options = {}) {
 
   op.evaluate = function (equation) {
     op.onEvaluate(equation);
-    let input = equation;
-    let expression;
+    var input = equation;
+    var expression;
 
     while ((expression = op.search(equation)) !== null) {
-      let operands = op.parse(expression);
-      let result = op.resolve(operands);
+      var operands = op.parse(expression);
+      var result = op.resolve(operands);
       equation = equation.replace(expression, result);
     }
 
@@ -109,7 +110,7 @@ let DiceOperation = function (options = {}) {
   };
 };
 
-let BaseModule = function () {
+var BaseModule = function BaseModule() {
   this.apply = function (roller) {
     roller.operations.unshift(this.operations[0]);
   };
@@ -117,16 +118,16 @@ let BaseModule = function () {
   this.operations = [new DiceOperation({
     name: 'dice',
     search: /\d*d\d+/,
-    parse: function (expression) {
+    parse: function parse(expression) {
       return expression.split(/\D+/);
     },
-    roll: function (facets) {
+    roll: function roll(facets) {
       return Math.floor(Math.random() * facets + 1);
     },
-    resolve: function (rolls, facets) {
-      let value = 0;
+    resolve: function resolve(rolls, facets) {
+      var value = 0;
 
-      for (let i = 0; i < (rolls || 1); i++) {
+      for (var i = 0; i < (rolls || 1); i++) {
         value += this.roll(facets);
       }
 
@@ -141,8 +142,8 @@ let BaseModule = function () {
     }
 */
 
-let DiceRoller = function (options) {
-  let roller = this;
+var DiceRoller = function DiceRoller(options) {
+  var roller = this;
   roller.operations = [];
 
   roller.onSolve = function (equation) {};
@@ -150,7 +151,7 @@ let DiceRoller = function (options) {
   roller.onSolved = function (equation, solution) {};
 
   roller.solve = function (equation) {
-    let input = equation;
+    var input = equation;
     roller.onSolve(equation);
     roller.operations.forEach(op => {
       equation = op.evaluate(equation);
@@ -177,9 +178,9 @@ let DiceRoller = function (options) {
   }
 };
 
-let DnDModule = function () {
+var DnDModule = function DnDModule() {
   this.apply = function (roller) {
-    let advantage = this.operations[0];
+    var advantage = this.operations[0];
     advantage.parent = roller;
     roller.operations.unshift(advantage);
   };
@@ -192,10 +193,10 @@ let DnDModule = function () {
   new DiceOperation({
     name: 'Advantage',
     search: /\d+xd\d+/,
-    resolve: function (repetitions, facets) {
-      let operation = this; // 2xd20 becomes [d20, d20]. We then let the roller solve each d20 
+    resolve: function resolve(repetitions, facets) {
+      var operation = this; // 2xd20 becomes [d20, d20]. We then let the roller solve each d20 
 
-      let results = Array(+repetitions).fill('d' + facets).map(x => +operation.parent.solve(x)); // high-to-low sorting
+      var results = Array(+repetitions).fill('d' + facets).map(x => +operation.parent.solve(x)); // high-to-low sorting
 
       results.sort((x, y) => +x < +y);
       return JSON.stringify(results);
@@ -204,22 +205,16 @@ let DnDModule = function () {
   })];
 };
 
-/*  Explanation of this pattern: 
-    -?(\d*\.)?\d+
-        -? : optional - sign for negative numbers 
-        (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
-        \d+ : one or more digits.  
+/* RegExp fragment. 
+    -? : optional - sign for negative numbers 
+    (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
+    \d+ : one or more digits.  
 
-    Matches 
-        1
-        1.1
-        .1
-        -1
-        -1.1
-        -.1
+    matches: 1, 1.1, .1, -1, -1.1, -.1
 */
 
-let MathModule = function () {
+var rgxNumber = '-?(\\d*\\.)?\\d+';
+var MathModule = function MathModule() {
   this.apply = function (roller) {
     this.operations.forEach(op => {
       // Parentheses needs a reference to the roller for recursion 
@@ -232,43 +227,40 @@ let MathModule = function () {
     name: 'Parentheses',
     search: /\([^()]+\)/,
     parse: match => [match.replace(/[()]/g, '')],
-    resolve: function (x) {
+    resolve: function resolve(x) {
       return this.parent.solve(x);
     }
   }), new DiceOperation({
     name: 'Exponents',
-    search: /-?(\d*\.)?\d+\^-?(\d*\.)?\d+/,
+    search: new RegExp(rgxNumber + '\\^' + rgxNumber),
     resolve: (x, y) => Math.pow(x, y)
   })
   /* Needs to happen simultaneously, so a single function */
   , new DiceOperation({
-    name: 'MultiplyAndDivide',
-    search: /-?(\d*\.)?\d+[*\/]-?(\d*\.)?\d+/,
-    parse: function (expression) {
-      let firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-      let secondOperand = /-?(\d*\.)?\d+$/.exec(expression)[0];
-      let operator = /[\*\/]/.exec(expression)[0];
+    name: 'MultiplyDivide',
+    search: new RegExp(rgxNumber + '[*\\/]' + rgxNumber),
+    parse: function parse(expression) {
+      var firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+      var secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+      var operator = /[*\/]/.exec(expression)[0];
       return [firstOperand, secondOperand, operator];
     },
     resolve: (x, y, op) => op == '*' ? x * y : x / y
   }), new DiceOperation({
-    name: 'Add',
-    search: /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/,
-    resolve: (x, y) => +x + +y
-  }), new DiceOperation({
-    name: 'Subtract',
-    search: /-?(\d*\.)?\d+[\-]-?(\d*\.)?\d+/,
-    parse: function (expression) {
-      let firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-      let secondOperand = /(--)?(\d*\.)?\d+$/.exec(expression)[0];
+    name: 'AddSubtract',
+    search: new RegExp(rgxNumber + '[+-]' + rgxNumber),
+    parse: function parse(expression) {
+      var firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+      var secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+      var operator = expression.substr(firstOperand.length, 1); // Make secondOperand positive if we are subtracting a positive.
 
-      if (secondOperand.substr(0, 2) == '--') {
+      if (operator == '-' && !/--/.test(expression)) {
         secondOperand = secondOperand.substr(1);
       }
 
-      return [firstOperand, secondOperand];
+      return [firstOperand, secondOperand, operator];
     },
-    resolve: (x, y) => +x - +y
+    resolve: (x, y, op) => op == '+' ? +x + +y : +x - +y
   })];
 };
 
@@ -290,11 +282,11 @@ let MathModule = function () {
         }
     ];
 */
-let getCurrentOp = function (roller) {
+var getCurrentOp = function getCurrentOp(roller) {
   return roller.log.slice(-1)[0].operations.slice(-1)[0];
 };
 
-let LoggingModule = function () {
+var LoggingModule = function LoggingModule() {
   this.apply = function (roller) {
     roller.log = [];
     this.onSolve(roller);
@@ -310,7 +302,7 @@ let LoggingModule = function () {
   };
 
   this.onSolve = function (roller) {
-    let onSolve = roller.onSolve;
+    var onSolve = roller.onSolve;
 
     roller.onSolve = function (equation) {
       roller.log.push({
@@ -323,7 +315,7 @@ let LoggingModule = function () {
   };
 
   this.onSolved = function (roller) {
-    let onSolved = roller.onSolved;
+    var onSolved = roller.onSolved;
 
     roller.onSolved = function (equation, solution) {
       roller.log.slice(-1)[0].solution = solution;
@@ -333,7 +325,7 @@ let LoggingModule = function () {
 
   this.onEvaluate = function (roller) {
     roller.operations.forEach(op => {
-      let onEvaluate = op.onEvaluate;
+      var onEvaluate = op.onEvaluate;
 
       op.onEvaluate = function (equation) {
         roller.log.slice(-1)[0].operations.push({
@@ -349,7 +341,7 @@ let LoggingModule = function () {
 
   this.onEvaluated = function (roller) {
     roller.operations.forEach(op => {
-      let onEvaluated = op.onEvaluated;
+      var onEvaluated = op.onEvaluated;
 
       op.onEvaluated = function (input, equation) {
         getCurrentOp(roller).evaluate = {
@@ -363,7 +355,7 @@ let LoggingModule = function () {
 
   this.onSearched = function (roller) {
     roller.operations.forEach(op => {
-      let onSearched = op.onSearched;
+      var onSearched = op.onSearched;
 
       op.onSearched = function (equation, expression) {
         getCurrentOp(roller).search.push({
@@ -377,7 +369,7 @@ let LoggingModule = function () {
 
   this.onParsed = function (roller) {
     roller.operations.forEach(op => {
-      let onParsed = op.onParsed;
+      var onParsed = op.onParsed;
 
       op.onParsed = function (expression, operands) {
         getCurrentOp(roller).parse.push({
@@ -391,7 +383,7 @@ let LoggingModule = function () {
 
   this.onResolved = function (roller) {
     roller.operations.forEach(op => {
-      let onResolved = op.onResolved;
+      var onResolved = op.onResolved;
 
       op.onResolved = function (operands, result) {
         getCurrentOp(roller).resolve.push({
@@ -406,8 +398,8 @@ let LoggingModule = function () {
 
 
   this.onDiceResolve = function (roller) {
-    let diceOp = roller.operations.find(op => op.name === 'dice');
-    let onResolve = diceOp.onResolve;
+    var diceOp = roller.operations.find(op => op.name === 'dice');
+    var onResolve = diceOp.onResolve;
 
     diceOp.onResolve = function (operands) {
       getCurrentOp(roller).rolls = [];
@@ -418,11 +410,11 @@ let LoggingModule = function () {
 
 
   this.onDiceRoll = function (roller) {
-    let diceOp = roller.operations.find(op => op.name === 'dice');
-    let roll = diceOp.roll;
+    var diceOp = roller.operations.find(op => op.name === 'dice');
+    var roll = diceOp.roll;
 
     diceOp.roll = function (facets) {
-      let rollResult = roll(facets);
+      var rollResult = roll(facets);
       getCurrentOp(roller).rolls.push(rollResult);
       return rollResult;
     };
@@ -431,12 +423,12 @@ let LoggingModule = function () {
 
 
   this.onDiceResolved = function (roller) {
-    let diceOp = roller.operations.find(op => op.name === 'dice');
-    let onResolved = diceOp.onResolved;
+    var diceOp = roller.operations.find(op => op.name === 'dice');
+    var onResolved = diceOp.onResolved;
 
     diceOp.onResolved = function (operands, result) {
-      let resolved = onResolved(operands, result);
-      let diceLog = getCurrentOp(roller);
+      var resolved = onResolved(operands, result);
+      var diceLog = getCurrentOp(roller);
       diceLog.resolve.slice(-1)[0].rolls = diceLog.rolls;
       delete diceLog.rolls;
       return resolved;
