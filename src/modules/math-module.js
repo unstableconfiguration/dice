@@ -57,23 +57,7 @@ export let MathModule = function() {
 
                 return [firstOperand, secondOperand, operator];
             },
-            resolve : (x, y, op) => op == '+' ? x + y : x - y 
+            resolve : (x, y, op) => op == '+' ? +x + +y : +x - +y 
         })
-        /*, new DiceOperation({
-            name : 'Add',
-            search : /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/, 
-            resolve : (x,y) => +x + +y  
-        })
-        , new DiceOperation({
-            name : 'Subtract',
-            search : /-?(\d*\.)?\d+[\-]-?(\d*\.)?\d+/, 
-            parse : function(expression) { 
-                let firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-                let secondOperand = /(--)?(\d*\.)?\d+$/.exec(expression)[0];
-                if(secondOperand.substr(0, 2) == '--') { secondOperand = secondOperand.substr(1); }
-                return [firstOperand, secondOperand];
-            },
-            resolve : (x,y) => +x - +y  
-        })*/
     ]
 };
