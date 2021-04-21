@@ -425,21 +425,15 @@ var DnDTests = () => {
   });
 };
 
-/*  Explanation of this pattern: 
-    -?(\d*\.)?\d+
-        -? : optional - sign for negative numbers 
-        (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
-        \d+ : one or more digits.  
+/* RegExp fragment. 
+    -? : optional - sign for negative numbers 
+    (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
+    \d+ : one or more digits.  
 
-    Matches 
-        1
-        1.1
-        .1
-        -1
-        -1.1
-        -.1
+    matches: 1, 1.1, .1, -1, -1.1, -.1
 */
 
+var rgxNumber = '-?(\\d*\\.)?\\d+';
 var MathModule = function MathModule() {
   this.apply = function (roller) {
     this.operations.forEach(op => {
@@ -458,39 +452,53 @@ var MathModule = function MathModule() {
     }
   }), new DiceOperation({
     name: 'Exponents',
-    search: /-?(\d*\.)?\d+\^-?(\d*\.)?\d+/,
+    search: new RegExp(rgxNumber + '\\^' + rgxNumber),
     resolve: (x, y) => Math.pow(x, y)
   })
   /* Needs to happen simultaneously, so a single function */
   , new DiceOperation({
-    name: 'MultiplyAndDivide',
-    search: /-?(\d*\.)?\d+[*\/]-?(\d*\.)?\d+/,
+    name: 'MultiplyDivide',
+    search: new RegExp(rgxNumber + '[*\\/]' + rgxNumber),
     parse: function parse(expression) {
-      var firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-      var secondOperand = /-?(\d*\.)?\d+$/.exec(expression)[0];
-      var operator = /[\*\/]/.exec(expression)[0];
+      var firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+      var secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+      var operator = /[*\/]/.exec(expression)[0];
       return [firstOperand, secondOperand, operator];
     },
     resolve: (x, y, op) => op == '*' ? x * y : x / y
   }), new DiceOperation({
-    name: 'Add',
-    search: /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/,
-    resolve: (x, y) => +x + +y
-  }), new DiceOperation({
-    name: 'Subtract',
-    search: /-?(\d*\.)?\d+[\-]-?(\d*\.)?\d+/,
+    name: 'AddSubtract',
+    search: new RegExp(rgxNumber + '[+-]' + rgxNumber),
     parse: function parse(expression) {
-      var firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-      var secondOperand = /(--)?(\d*\.)?\d+$/.exec(expression)[0];
+      var firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+      var secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+      var operator = expression.substr(firstOperand.length, 1); // Make secondOperand positive if we are subtracting a positive.
 
-      if (secondOperand.substr(0, 2) == '--') {
+      if (operator == '-' && !/--/.test(expression)) {
         secondOperand = secondOperand.substr(1);
       }
 
-      return [firstOperand, secondOperand];
+      return [firstOperand, secondOperand, operator];
     },
-    resolve: (x, y) => +x - +y
-  })];
+    resolve: (x, y, op) => op == '+' ? +x + +y : +x - +y
+  })
+  /*, new DiceOperation({
+      name : 'Add',
+      search : /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/, 
+      resolve : (x,y) => +x + +y  
+  })
+  , new DiceOperation({
+      name : 'Subtract',
+      search : /-?(\d*\.)?\d+[\-]-?(\d*\.)?\d+/, 
+      parse : function(expression) { 
+          let firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
+          let secondOperand = /(--)?(\d*\.)?\d+$/.exec(expression)[0];
+          if(secondOperand.substr(0, 2) == '--') { secondOperand = secondOperand.substr(1); }
+          return [firstOperand, secondOperand];
+      },
+      resolve : (x,y) => +x - +y  
+  })*/
+  ];
 };
 
 var assert$3 = chai.assert;
@@ -813,10 +821,10 @@ var LoggingTests = () => {
 var assert$4 = chai.assert;
 var MathTests = () => {
   describe('Math Module Unit Tests', function () {
-    describe('Addition', function () {
-      var addOperation = new MathModule().operations.find(mod => mod.name == 'Add');
+    describe('Addition and Subtraction Tests', function () {
+      var addSubtract = new MathModule().operations.find(op => op.name == 'AddSubtract');
       describe('Search Tests', function () {
-        var addSearchTests = [{
+        var searchTests = [{
           input: '1+2',
           output: '1+2',
           note: "should match 1+2"
@@ -830,49 +838,6 @@ var MathTests = () => {
           note: "should not match +2"
         }, {
           input: '1-2',
-          output: null,
-          note: 'should not match 1-2'
-        }];
-        addSearchTests.forEach(test => {
-          it(test.note, function () {
-            assert$4(addOperation.search(test.input) == test.output);
-          });
-        });
-      });
-      describe('Parse Tests', function () {
-        var addParseTests = [{
-          input: '1+2',
-          output: ['1', '2'],
-          note: 'should parse 1+2 to [1, 2]'
-        }, {
-          input: '-3+4',
-          output: ['-3', '4'],
-          note: 'should parse -3+4 to [-3, 4]'
-        }, {
-          input: '55+66',
-          output: ['55', '66'],
-          note: 'should parse 55+66 to [55, 66]'
-        }];
-        addParseTests.forEach(test => {
-          it(test.note, function () {
-            assert$4(JSON.stringify(addOperation.parse(test.input)) == JSON.stringify(test.output));
-          });
-        });
-      });
-      describe('Evaluation Tests', function () {
-        it('should evaluate 1+2 to 3', function () {
-          assert$4(addOperation.evaluate('1+2') === '3');
-        });
-        it('should evaluate -1+3-2 to 2-2 (addition operation only)', function () {
-          assert$4(addOperation.evaluate('-1+3-2') == '2-2');
-        });
-      });
-    });
-    describe('Subtraction', function () {
-      var subtractOperation = new MathModule().operations.find(mod => mod.name == 'Subtract');
-      describe('Search Tests', function () {
-        var addSearchTests = [{
-          input: '1-2',
           output: '1-2',
           note: "should match 1-2"
         }, {
@@ -883,48 +848,59 @@ var MathTests = () => {
           input: '-2',
           output: null,
           note: "should not match -2"
-        }, {
-          input: '1+2',
-          output: null,
-          note: 'should not match 1+2'
         }];
-        addSearchTests.forEach(test => {
+        searchTests.forEach(test => {
           it(test.note, function () {
-            assert$4(subtractOperation.search(test.input) == test.output);
+            assert$4(addSubtract.search(test.input) == test.output);
           });
         });
       });
       describe('Parse Tests', function () {
-        var addParseTests = [{
+        var parseTests = [{
+          input: '1+2',
+          output: ['1', '2', '+'],
+          note: 'should parse 1+2 to [1, 2, +]'
+        }, {
+          input: '-3+4',
+          output: ['-3', '4', '+'],
+          note: 'should parse -3+4 to [-3, 4, +]'
+        }, {
+          input: '55+66',
+          output: ['55', '66', '+'],
+          note: 'should parse 55+66 to [55, 66, +]'
+        }, {
           input: '1-2',
-          output: ['1', '2'],
-          note: 'should parse 1-2 to [1, 2]'
+          output: ['1', '2', '-'],
+          note: 'should parse 1-2 to [1, 2, -]'
         }, {
           input: '-3-4',
-          output: ['-3', '4'],
-          note: 'should parse -3-4 to [-3, 4]'
+          output: ['-3', '4', '-'],
+          note: 'should parse -3-4 to [-3, 4, -]'
         }, {
           input: '55--66',
-          output: ['55', '-66'],
-          note: 'should parse 55-66 to [55, 66]'
+          output: ['55', '-66', '-'],
+          note: 'should parse 55-66 to [55, -66, -]'
         }];
-        addParseTests.forEach(test => {
+        parseTests.forEach(test => {
           it(test.note, function () {
-            assert$4(JSON.stringify(subtractOperation.parse(test.input)) == JSON.stringify(test.output));
+            assert$4(JSON.stringify(addSubtract.parse(test.input)) == JSON.stringify(test.output));
           });
         });
       });
       describe('Evaluation Tests', function () {
-        it('should evaluate 1-2 to -1', function () {
-          assert$4(subtractOperation.evaluate('1-2') === '-1');
+        it('should evaluate 1+2 to 3', function () {
+          assert$4(addSubtract.evaluate('1+2') === '3');
         });
-        it('should evaluate -1+3-2 to -1+1 (addition operation only)', function () {
-          assert$4(subtractOperation.evaluate('-1+3-2') == '-1+1');
+        it('should evaluate 1-2 to -1', function () {
+          assert$4(addSubtract.evaluate('1-2') === '-1');
+        });
+        it('should evaluate 2-1+1 to 2', function () {
+          assert$4(addSubtract.evaluate('2-1+1') === '2');
         });
       });
     });
     describe('Multiplication and Division Tests', function () {
-      var multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyAndDivide');
+      var multDivOperation = new MathModule().operations.find(op => op.name == 'MultiplyDivide');
       describe('Search Tests', function () {
         var searchTests = [{
           input: '1*2',
