@@ -1,19 +1,14 @@
 import { DiceOperation } from '../dice-operation.js'
 
-/*  Explanation of this pattern: 
-    -?(\d*\.)?\d+
-        -? : optional - sign for negative numbers 
-        (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
-        \d+ : one or more digits.  
+/* RegExp fragment. 
+    -? : optional - sign for negative numbers 
+    (\d*\.)? : optional set of 0 or more numbers and one . for decimals 
+    \d+ : one or more digits.  
 
-    Matches 
-        1
-        1.1
-        .1
-        -1
-        -1.1
-        -.1
+    matches: 1, 1.1, .1, -1, -1.1, -.1
 */
+const rgxNumber = '-?(\\d*\\.)?\\d+';
+
 
 export let MathModule = function() {
     this.apply = function(roller) {
@@ -32,22 +27,39 @@ export let MathModule = function() {
         })
         , new DiceOperation({
             name : 'Exponents',
-            search : /-?(\d*\.)?\d+\^-?(\d*\.)?\d+/,
+            search : new RegExp(rgxNumber + '\\^' + rgxNumber),
             resolve : (x,y) => Math.pow(x, y)
         })
         /* Needs to happen simultaneously, so a single function */
         , new DiceOperation({
-            name : 'MultiplyAndDivide',
-            search : /-?(\d*\.)?\d+[*\/]-?(\d*\.)?\d+/,
+            name : 'MultiplyDivide',
+            search : new RegExp(rgxNumber + '[*\\/]' + rgxNumber),
             parse : function(expression) {
-                let firstOperand = /^-?(\d*\.)?\d+/.exec(expression)[0];
-                let secondOperand = /-?(\d*\.)?\d+$/.exec(expression)[0];
-                let operator = /[\*\/]/.exec(expression)[0];
+                let firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+                let secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+                let operator = /[*\/]/.exec(expression)[0];
                 return [firstOperand, secondOperand, operator];
             }
             , resolve : (x, y, op) => op == '*' ? x * y : x / y
         })
         , new DiceOperation({
+            name : 'AddSubtract',
+            search : new RegExp(rgxNumber + '[+-]' + rgxNumber),
+            parse : function(expression) { 
+                let firstOperand = new RegExp('^' + rgxNumber).exec(expression)[0];
+                let secondOperand = new RegExp(rgxNumber + '$').exec(expression)[0];
+                
+                let operator = expression.substr(firstOperand.length, 1);
+                // Make secondOperand positive if we are subtracting a positive.
+                if(operator == '-' && !/--/.test(expression)) {
+                    secondOperand = secondOperand.substr(1);
+                }
+
+                return [firstOperand, secondOperand, operator];
+            },
+            resolve : (x, y, op) => op == '+' ? x + y : x - y 
+        })
+        /*, new DiceOperation({
             name : 'Add',
             search : /-?(\d*\.)?\d+[+]-?(\d*\.)?\d+/, 
             resolve : (x,y) => +x + +y  
@@ -62,6 +74,6 @@ export let MathModule = function() {
                 return [firstOperand, secondOperand];
             },
             resolve : (x,y) => +x - +y  
-        })
+        })*/
     ]
 };
