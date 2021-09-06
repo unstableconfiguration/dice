@@ -7,24 +7,10 @@ export default [{
             { 
                 file : 'dist/dice.js',
                 format : 'es'
-            },
-            { 
-                file : 'gh-pages/scripts/dice.js',
-                format : 'es'
             }
         ],
         plugins : [
             del({ targets: 'dist/*' }),
-            babel({ babelHelpers: 'bundled' })
-        ]
-    },
-    {
-        input: 'tests/tests.js',
-        output : {
-            file : 'gh-pages/tests/dice-tests.js',        
-            format : 'es'
-        },
-        plugins : [
             babel({ babelHelpers: 'bundled' })
         ]
     }
