@@ -1,11 +1,11 @@
-import { DiceRoller } from '../src/dice.js'
-import { MathModule } from '../src/modules/math-module.js'
-import { DnDModule } from '../src/modules/dnd-module.js'
+import { Dice } from '../app/dice.js'
+import { MathModule } from '../app/modules/math-module.js'
+import { DnDModule } from '../app/modules/dnd-module.js'
 import { strict as assert } from 'assert';
 
 describe('Integration Tests', function() { 
     describe('Dice and Math', function() {
-        let roller = new DiceRoller({ modules : [MathModule] });
+        let roller = new Dice({ modules : [MathModule] });
         let dice = roller.operations.find(op => op.name == 'dice');
         // Simplify our tests by removing randomization; that gets tested in the dice unit tests.
         dice.roll = (facets)=>+facets;
@@ -29,7 +29,7 @@ describe('Integration Tests', function() {
     });
 
     describe('Dice, Math, and DnD', function() {
-        let roller = new DiceRoller({ modules : [MathModule, DnDModule] });
+        let roller = new Dice({ modules : [MathModule, DnDModule] });
         let dice = roller.operations.find(op => op.name == 'dice');
         dice.roll = (facets) => +facets;
         

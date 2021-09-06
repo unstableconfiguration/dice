@@ -1,5 +1,5 @@
-import { MathModule } from '../src/modules/math-module.js'
-import { DiceRoller } from '../src/dice.js';
+import { MathModule } from '../app/modules/math-module.js'
+import { Dice } from '../app/dice.js';
 import { strict as assert } from 'assert';
 
 describe('Math Module Unit Tests', function() {
@@ -176,7 +176,7 @@ describe('Math Module Unit Tests', function() {
     });
 
     describe('Math Integration Tests', function() { 
-        let roller = new DiceRoller({ modules : [MathModule] });
+        let roller = new Dice({ modules : [MathModule] });
         it('should evaluate 3*(6+3^2) as 45', function() {
             assert(roller.solve('3*(6+3^2)') == '45')
         }); 

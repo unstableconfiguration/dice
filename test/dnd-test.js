@@ -1,9 +1,9 @@
-import { DiceRoller } from '../src/dice.js'
-import { DnDModule } from '../src/modules/dnd-module.js'
+import { Dice } from '../app/dice.js'
+import { DnDModule } from '../app/modules/dnd-module.js'
 import { strict as assert } from 'assert';
 
 describe('5e dice extensions', function(){
-    let roller = new DiceRoller({ modules : [DnDModule]});
+    let roller = new Dice({ modules : [DnDModule]});
 
     describe('Advantage/Disadvantage', function() {
         let advantage = new DnDModule().operations[0];

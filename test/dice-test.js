@@ -1,4 +1,4 @@
-import { BaseModule } from '../src/modules/base-module.js';
+import { BaseModule } from '../app/modules/base-module.js';
 import { strict as assert } from 'assert';
 
 describe('Dice Roller Tests', function() {

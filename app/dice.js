@@ -5,7 +5,7 @@ import { BaseModule } from './modules/base-module.js'
         modules : [modules]
     }
 */
-export let DiceRoller = function(options) {
+export let Dice = function(options) {
     let roller = this;
     roller.operations = [];
 

@@ -4,7 +4,7 @@ Equation-based dice roller for use in dice-based games. With no modules loaded, 
 
 Base usage:  
 '''
-let dice = new DiceRoller();
+let dice = new Dice();
 let solution = dice.solve('3d6');
 // Expect: solution is a number 3-18
 '''
@@ -28,7 +28,7 @@ The operations evaluate in order.
 
 Base usage:  
 '''
-let dice = new DiceRoller();
+let dice = new Dice();
 dice.operations.add(math_functions);
 let solution = dice.solve('2+3x4');
 // Espect: solution is 14
@@ -45,7 +45,7 @@ The D&D module only needs minor additional functionality to the base dice rollin
 
 Base usage:  
 '''
-let dice = new DiceRoller({ modules : [MathModule, DnDModule]});
+let dice = new Dice({ modules : [MathModule, DnDModule]});
 // dice.applyModules([MathModule, DnDModule]);
 let solution = dice.solve('2xd20+5');
 '''  
